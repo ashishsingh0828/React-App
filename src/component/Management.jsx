@@ -4,7 +4,7 @@ import '../assets/css/management.css'
 function Management() {
   return (
     <div>
-      
+      Hello Bcche
     </div>
   )
 }
