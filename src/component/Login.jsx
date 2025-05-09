@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { User, Lock, Mail, Building, Users, GraduationCap, ArrowLeft } from 'lucide-react';
 import '../assets/css/login.css';
+import { useNavigate } from 'react-router-dom';
 
 const AuthPage = () => {
-  // States
   const [isAnimating, setIsAnimating] = useState(false);
   const [role, setRole] = useState('student');
+  const navigate = useNavigate();
   
-  // Form states
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
 
-  // Animation effect when component mounts
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsAnimating(true);
@@ -52,7 +51,6 @@ const AuthPage = () => {
 
   const { icon: RoleIcon, title, loginType } = getRoleInfo();
 
-  // Form submission handler
   const handleLogin = () => {
     if (loginType === 'email' && !email) {
       alert("Email is required for management login!");
@@ -76,12 +74,10 @@ const AuthPage = () => {
     alert(`Login attempted as ${role}\n${loginDetails}\nPassword: ${password.replace(/./g, '*')}`);
   };
 
-  // Back button handler
   const handleBack = () => {
-    alert("Going back to main page");
+    navigate('/');
   };
 
-  // Dynamic input field based on role
   const renderIdentifierField = () => {
     if (loginType === 'email') {
       return (
@@ -112,7 +108,17 @@ const AuthPage = () => {
             />
           </div>
           
-       
+          <div className="input-container">
+            <div className="input-icon">
+              <Mail size={18} />
+            </div>
+            <input
+              type="email"
+              placeholder="Email Address (optional)"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
         </>
       );
     }
@@ -120,36 +126,46 @@ const AuthPage = () => {
 
   return (
     <div className={`login-container ${isAnimating ? 'animate' : ''}`}>
-      {/* Back button */}
-      <button onClick={handleBack} className="back-button">
-      <ArrowLeft size={16} />
-      <span>Back</span>
-    </button>
+       <div id="stars"></div>
+      <div id="stars2"></div>
+      <div id="stars3"></div>
+       {/* Animated stars */}
+       <div className="night">
+  {/* Shooting Stars */}
+  {Array.from({ length: 20 }).map((_, i) => (
+    <div key={`shooting-${i}`} className="shooting_star" />
+  ))}
+
+  {/* Twinkling Stars */}
+  {Array.from({ length: 80 }).map((_, i) => {
+    const size = Math.random() * 3 + 1;
+    return (
+      <div
+        key={`star-${i}`}
+        className="star"
+        style={{
+          width: `${size}px`,
+          height: `${size}px`,
+          top: `${Math.random() * 100}%`,
+          left: `${Math.random() * 100}%`,
+          animationDuration: `${Math.random() * 30 + 10}s`,
+          animationDelay: `${Math.random() * 10}s`,
+        }}
+      />
+    );
+  })}
+</div>
+
       
-      {/* Star background */}
-      <div className="star-background">
-        {[...Array(100)].map((_, i) => (
-          <div
-            key={i}
-            className="star"
-            style={{
-              width: Math.random() * 2 + 1 + 'px',
-              height: Math.random() * 2 + 1 + 'px',
-              top: Math.random() * 100 + '%',
-              left: Math.random() * 100 + '%',
-              opacity: Math.random() * 0.8 + 0.2
-            }}
-          />
-        ))}
-      </div>
+      <button onClick={handleBack} className="back-button " style={{position:'absolute'}}>
+        <ArrowLeft size={16} />
+        <span>Back </span>
+      </button>
       
-      {/* Main container */}
+     
+      
       <div className={`card-container ${isAnimating ? 'animate' : ''}`}>
-        
-        {/* Card */}
         <div className={`login-card ${role}`}>
-          
-          {/* Header */}
           <div className={`card-header ${role}`}>
             <div className="icon-container">
               <RoleIcon size={32} />
@@ -157,7 +173,6 @@ const AuthPage = () => {
             <h2>{title}</h2>
           </div>
           
-          {/* Role selector */}
           <div className="role-selector">
             <button 
               onClick={() => setRole('student')} 
@@ -182,7 +197,6 @@ const AuthPage = () => {
             </button>
           </div>
           
-          {/* Login Form */}
           <div className="login-form">
             {renderIdentifierField()}
             
@@ -220,13 +234,12 @@ const AuthPage = () => {
             
             <button
               onClick={handleLogin}
-              className={`sign-in-button ${role}`}
+              className={`sign-in-button text-white ${role}` }
             >
               Sign In
             </button>
           </div>
           
-          {/* Footer */}
           <div className="card-footer">
             <p>
               © {new Date().getFullYear()} Education Portal. All rights reserved.
