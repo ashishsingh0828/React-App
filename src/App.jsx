@@ -2,7 +2,12 @@ import { useState, useEffect } from 'react';
 import { GraduationCap, Users, Building, BookOpen, Star, Sparkles } from 'lucide-react';
 import './App.css';
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
-import Login from 'c:/Ashish/my-react-app/src/component/login.jsx';
+import Login from './component/Login.jsx';
+import Management from './component/Management.jsx';
+import Teacher from './component/Teacher';
+import Student from './component/Student';
+
+
 
 function App() {
   return (
@@ -10,6 +15,9 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/management/*" element={<Management />} />
+        <Route path="/techer" element={<Teacher />} />
+        <Route path="/student" element={<Student />} />
       </Routes>
     </BrowserRouter>
   );

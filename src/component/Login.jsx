@@ -67,11 +67,23 @@ const AuthPage = () => {
       return;
     }
     
-    const loginDetails = loginType === 'email' 
-      ? `Email: ${email}` 
-      : `${username ? 'Username: ' + username : ''}${username && email ? ' / ' : ''}${email ? 'Email: ' + email : ''}`;
+    // In a real application, you would verify credentials here
+    // For now, we'll just navigate to the appropriate dashboard
     
-    alert(`Login attempted as ${role}\n${loginDetails}\nPassword: ${password.replace(/./g, '*')}`);
+    // Navigate to the appropriate dashboard based on role
+    switch(role) {
+      case 'management':
+        navigate('/management');
+        break;
+      case 'teacher':
+        navigate('/teacher');
+        break;
+      case 'student':
+        navigate('/student');
+        break;
+      default:
+        navigate('/');
+    }
   };
 
   const handleBack = () => {
