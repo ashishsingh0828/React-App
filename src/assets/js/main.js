@@ -1,5 +1,8 @@
 // assets/js/main.js
 import Chart from "chart.js/auto";
+import Swiper from "swiper/bundle";
+import "swiper/css/bundle";
+
 
 export function initSidebarHover() {
   const list = document.querySelectorAll(".navigation li");
@@ -1386,13 +1389,13 @@ export const downloadData = (data) => {
       row.paymentId,
       row.date,
       row.admissionNo,
-      `"${row.name}"`, // Wrap in quotes to handle names with commas
+      `"${row.name}"`,
       row.class,
       row.feeType,
-      `"${row.collectedBy}"`, // Wrap in quotes to handle names with commas
+      `"${row.collectedBy}"`, 
       row.fee,
-      `"${row.paid}"`, // Wrap in quotes to handle currency symbols
-      `"${row.discount}"`, // Wrap in quotes to handle currency symbols
+      `"${row.paid}"`,
+      `"${row.discount}"`, 
       row.fine,
       row.total
     ].join(','))
@@ -1416,66 +1419,960 @@ export const downloadData = (data) => {
 };
 
 
-// ₹ Function
 
 
 // Pie Chart
-export function renderPieChart(ctx, data, isDonut = false, classCount = 10) {
-  let labels = [];
-  let backgroundColors = [];
 
-  if (isDonut) {
-    for (let i = 1; i <= classCount; i++) {
-      labels.push(`${i}${getOrdinalSuffix(i)} Class`);
-      backgroundColors.push(getClassColor(i));
-    }
-  } else {
-    // Pie chart: fixed 3 labels
-    labels = ['Present', 'Late', 'Absent'];
-    backgroundColors = ['#28a745', '#fd7e14', '#dc3545'];
-    data = data.slice(0, 3); 
-  }
-
-  return new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: labels,
-      datasets: [{
-        data: data,
-        backgroundColor: backgroundColors,
-      }]
+  const STUDENT_DATA = {
+    lowAttendance: {
+      labels: ['Late Students', 'Present Students', 'Absent Srudents'],
+      data: [12, 25, 8],
+      backgroundColor: ['#ff4757','#ff4766', 
+        '#5352ed',],
+      borderWidth: 0
     },
-    options: {
-      cutout: isDonut ? '60%' : '0%', 
+    totalStudents: {
+      labels: [
+        '1st Class Student',
+        '2nd Class Student', 
+        '3rd Class Student',
+        '4th Class Student',
+        '5th Class Student',
+        '6th Class Student',
+        '7th Class Student',
+        '8th Class Student',
+        '9th Class Student'
+      ],
+      data: [45, 38, 32, 28, 35, 25, 30, 33, 34],
+      backgroundColor: [
+        '#ff4757', // 1st Class - Red
+        '#5352ed', // 2nd Class - Blue  
+        '#2f3542', // 3rd Class - Dark Gray
+        '#2ed573', // 4th Class - Green
+        '#1e90ff', // 5th Class - Light Blue
+        '#3742fa', // 6th Class - Purple
+        '#ffa502', // 7th Class - Orange
+        '#2f3640', // 8th Class - Dark Blue-Gray
+        '#70a1ff'  // 9th Class - Light Purple
+      ],
+      borderWidth: 0
+    }
+  };
+
+  // Chart configuration options
+  const CHART_OPTIONS = {
+    lowAttendance: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: {
-          display: true,
-          position: 'bottom',
-          labels: {
-            usePointStyle: true,
-            pointStyle: 'circle'
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return context.label + ': ' + context.parsed + ' students';
+            }
           }
+        }
+      },
+      cutout: '0%',
+      elements: {
+        arc: {
+          borderWidth: 0
+        }
+      }
+    },
+    totalStudents: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const total = context.dataset.data.reduce((a, b) => a + b, 0);
+              const percentage = ((context.parsed / total) * 100).toFixed(1);
+              return context.label + ': ' + context.parsed + ' students (' + percentage + '%)';
+            }
+          }
+        }
+      },
+      cutout: '45%',
+      elements: {
+        arc: {
+          borderWidth: 2,
+          borderColor: '#ffffff'
         }
       }
     }
+  };
+
+  function createLowAttendanceChart(canvas) {
+    return new Chart(canvas, {
+      type: 'doughnut',
+      data: {
+        labels: STUDENT_DATA.lowAttendance.labels,
+        datasets: [{
+          data: STUDENT_DATA.lowAttendance.data,
+          backgroundColor: STUDENT_DATA.lowAttendance.backgroundColor,
+          borderWidth: STUDENT_DATA.lowAttendance.borderWidth
+        }]
+      },
+      options: CHART_OPTIONS.lowAttendance
+    });
+  }
+
+  function createTotalStudentsChart(canvas) {
+    return new Chart(canvas, {
+      type: 'doughnut',
+      data: {
+        labels: STUDENT_DATA.totalStudents.labels,
+        datasets: [{
+          data: STUDENT_DATA.totalStudents.data,
+          backgroundColor: STUDENT_DATA.totalStudents.backgroundColor,
+          borderWidth: STUDENT_DATA.totalStudents.borderWidth
+        }]
+      },
+      options: CHART_OPTIONS.totalStudents
+    });
+  }
+
+  export function NewChart(lowAttendanceCanvas, totalStudentsCanvas) {
+    try {
+      const lowAttendanceChart = createLowAttendanceChart(lowAttendanceCanvas);
+      
+      const totalStudentsChart = createTotalStudentsChart(totalStudentsCanvas);
+      
+      const handleResize = () => {
+        lowAttendanceChart.resize();
+        totalStudentsChart.resize();
+      };
+      
+      window.addEventListener('resize', handleResize);
+      
+      return {
+        lowAttendanceChart,
+        totalStudentsChart,
+        cleanup: () => {
+          window.removeEventListener('resize', handleResize);
+          lowAttendanceChart.destroy();
+          totalStudentsChart.destroy();
+        }
+      };
+    } catch (error) {
+      console.error('Error initializing charts:', error);
+      return null;
+    }
+  }
+
+  export function DestroyCharts(charts) {
+    if (charts && charts.cleanup) {
+      charts.cleanup();
+    }
+  }
+
+  export { createLowAttendanceChart, createTotalStudentsChart };
+
+  export { STUDENT_DATA, CHART_OPTIONS };
+
+
+  // Performance Chart
+  
+
+
+
+
+  // Student Track
+  export const studentData = [
+  {
+    id: 1,
+    name: "Harshita",
+    class: "1st",
+    section: "A",
+    rollNo: "001",
+    status: "Late",
+    arrivalTime: "08:35 am",
+    remark: "",
+    feeStatus: "Paid"
+  },
+  {
+    id: 2,
+    name: "Versha Tanwar",
+    class: "7th",
+    section: "A",
+    rollNo: "025",
+    status: "Absent",
+    arrivalTime: "",
+    remark: "Medical Leave",
+    feeStatus: "Paid"
+  },
+  {
+    id: 3,
+    name: "Mohit Lochab",
+    class: "10th",
+    section: "B",
+    rollNo: "010",
+    status: "Absent",
+    arrivalTime: "",
+    remark: "Casual leave",
+    feeStatus: "Paid"
+  },
+  {
+    id: 4,
+    name: "Ashish Singh",
+    class: "9th",
+    section: "A",
+    rollNo: "0250",
+    status: "Fee",
+    arrivalTime: "",
+    remark: "Monthly fee not submitted",
+    feeStatus: "Pending"
+  },
+  {
+    id: 5,
+    name: "Priya Sharma",
+    class: "8th",
+    section: "B",
+    rollNo: "045",
+    status: "Present",
+    arrivalTime: "08:00 am",
+    remark: "",
+    feeStatus: "Paid"
+  },
+  {
+    id: 6,
+    name: "Rahul Kumar",
+    class: "6th",
+    section: "A",
+    rollNo: "030",
+    status: "Late",
+    arrivalTime: "08:45 am",
+    remark: "Transport issue",
+    feeStatus: "Paid"
+  },
+  {
+    id: 7,
+    name: "Anjali Gupta",
+    class: "5th",
+    section: "C",
+    rollNo: "015",
+    status: "Present",
+    arrivalTime: "07:55 am",
+    remark: "",
+    feeStatus: "Paid"
+  },
+  {
+    id: 8,
+    name: "Vikash Yadav",
+    class: "4th",
+    section: "B",
+    rollNo: "020",
+    status: "Absent",
+    arrivalTime: "",
+    remark: "Sick leave",
+    feeStatus: "Paid"
+  }
+];
+
+// Filter functions
+export const filterStudents = (students, filters) => {
+  return students.filter(student => {
+    const classMatch = !filters.class || student.class === filters.class;
+    const sectionMatch = !filters.section || student.section === filters.section;
+    const statusMatch = !filters.status || student.status.toLowerCase() === filters.status.toLowerCase();
+    const searchMatch = !filters.search || 
+      student.name.toLowerCase().includes(filters.search.toLowerCase()) ||
+      student.rollNo.includes(filters.search) ||
+      student.remark.toLowerCase().includes(filters.search.toLowerCase());
+    
+    return classMatch && sectionMatch && statusMatch && searchMatch;
+  });
+};
+
+// Get unique values for dropdowns
+export const getUniqueClasses = (students) => {
+  return [...new Set(students.map(student => student.class))].sort();
+};
+
+export const getUniqueSections = (students) => {
+  return [...new Set(students.map(student => student.section))].sort();
+};
+
+export const getUniqueStatuses = (students) => {
+  return [...new Set(students.map(student => student.status))];
+};
+
+// Generate report data
+export const generateReport = (students, filters) => {
+  const filteredData = filterStudents(students, filters);
+  const totalStudents = filteredData.length;
+  const presentCount = filteredData.filter(s => s.status === 'Present').length;
+  const absentCount = filteredData.filter(s => s.status === 'Absent').length;
+  const lateCount = filteredData.filter(s => s.status === 'Late').length;
+  const feeIssues = filteredData.filter(s => s.status === 'Fee').length;
+
+  return {
+    totalStudents,
+    presentCount,
+    absentCount,
+    lateCount,
+    feeIssues,
+    attendanceRate: totalStudents > 0 ? ((presentCount + lateCount) / totalStudents * 100).toFixed(1) : 0,
+    students: filteredData
+  };
+};
+
+// Download CSV function
+export const downloadCSV = (data, filename = 'student_report.csv') => {
+  const headers = ['Student Name', 'Class', 'Section', 'Roll No.', 'Status', 'Arrival Time', 'Remark', 'Fee Status'];
+  const csvContent = [
+    headers.join(','),
+    ...data.map(student => [
+      `"${student.name}"`,
+      `"${student.class}"`,
+      `"${student.section}"`,
+      `"${student.rollNo}"`,
+      `"${student.status}"`,
+      `"${student.arrivalTime}"`,
+      `"${student.remark}"`,
+      `"${student.feeStatus}"`
+    ].join(','))
+  ].join('\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  link.setAttribute('href', url);
+  link.setAttribute('download', filename);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+// Performance chart
+export function createStudentChart(canvasId, data) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) {
+    console.error(`Canvas with id ${canvasId} not found`);
+    return null;
+  }
+
+
+  const chartData = {
+    labels: data.labels || ['Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5', 'Class 6', 'Class 7', 'Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12'],
+    datasets: [
+      {
+        label: 'Bad',
+        data: data.bad || [25, 15, 30, 10, 5, 20, 8, 18, 35, 12, 22, 16],
+        backgroundColor: '#ef4444',
+        borderRadius: 4,
+        borderSkipped: false,
+      },
+      {
+        label: 'Average',
+        data: data.average || [40, 50, 25, 45, 35, 30, 55, 25, 20, 40, 28, 35],
+        backgroundColor: '#22c55e',
+        borderRadius: 4,
+        borderSkipped: false,
+      },
+      {
+        label: 'Good',
+        data: data.good || [35, 35, 45, 45, 60, 50, 37, 57, 45, 48, 50, 49],
+        backgroundColor: '#06b6d4',
+        borderRadius: 4,
+        borderSkipped: false,
+      }
+    ]
+  };
+
+  let chart; // Declare chart outside config
+
+  const config = {
+    type: 'bar',
+    data: chartData,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          stacked: true,
+          grid: { display: false },
+          ticks: {
+            color: '#64748b',
+            font: { size: 12, weight: '500' }
+          }
+        },
+        y: {
+          stacked: true,
+          beginAtZero: true,
+          grid: {
+            color: '#e2e8f0',
+            lineWidth: 1
+          },
+          ticks: {
+            color: '#64748b',
+            font: { size: 12, weight: '500' }
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            usePointStyle: true,
+            pointStyle: 'circle',
+            padding: 20,
+            color: '#1e293b',
+            font: { size: 14, weight: '600' }
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(15, 23, 42, 0.9)',
+          titleColor: '#f1f5f9',
+          bodyColor: '#f1f5f9',
+          borderColor: '#475569',
+          borderWidth: 1,
+          cornerRadius: 8,
+          displayColors: true,
+          callbacks: {
+            title: function (context) {
+              return `${context[0].label}`;
+            },
+            label: function (context) {
+              const total = context.chart.data.datasets.reduce((sum, dataset) => sum + dataset.data[context.dataIndex], 0);
+              const percentage = ((context.parsed.y / total) * 100).toFixed(1);
+              return `${context.dataset.label}: ${context.parsed.y} students (${percentage}%)`;
+            },
+            afterBody: function (context) {
+              const dataIndex = context[0].dataIndex;
+              const total = context[0].chart.data.datasets.reduce((sum, dataset) => sum + dataset.data[dataIndex], 0);
+              return `Total Students: ${total}`;
+            }
+          }
+        }
+      },
+      animation: {
+        duration:0,
+        easing: 'easeInOutQuart',
+        onComplete: function () {
+          this.options.onHover = (event, activeElements) => {
+            event.native.target.style.cursor = activeElements.length > 0 ? 'pointer' : 'default';
+          };
+        }
+      },
+      elements: {
+        bar: {
+          borderRadius: 6,
+          borderSkipped: false
+        }
+      },
+      interaction: {
+        intersect: false,
+        mode: 'index'
+      }
+    }
+  };
+
+  chart = new Chart(canvas.getContext('2d'), config);
+  canvas.chart = chart;
+
+  const addWaterFlowEffect = () => {
+    let animationId;
+    let startTime = null;
+
+    const animate = (currentTime) => {
+      if (!startTime) startTime = currentTime;
+      const elapsed = currentTime - startTime;
+      const cycle = (elapsed / 3000) % 1;
+
+      chart.data.datasets.forEach((dataset, datasetIndex) => {
+        dataset.data = dataset.data.map((value, index) => {
+          const wave = Math.sin((cycle * Math.PI * 2) + (index * 0.5)) * 2;
+          return Math.max(0, value + wave);
+        });
+      });
+
+      chart.update('none');
+      animationId = requestAnimationFrame(animate);
+    };
+
+    setTimeout(() => {
+      animationId = requestAnimationFrame(animate);
+    }, 2000);
+
+    return () => {
+      if (animationId) cancelAnimationFrame(animationId);
+    };
+  };
+
+  const stopWaterFlow = addWaterFlowEffect();
+
+  return {
+    chart,
+    stopWaterFlow,
+    updateData: (newData) => {
+      chart.data.datasets[0].data = newData.bad;
+      chart.data.datasets[1].data = newData.average;
+      chart.data.datasets[2].data = newData.good;
+      chart.update();
+    }
+  };
+}
+
+// Swiper Slider 
+
+export function initPopularPlaylistSlider() {
+  new Swiper(".pps-swiper", {
+   effect: "coverflow",
+  grabCursor: true,
+  centeredSlides: true,
+  loop: true,
+  speed: 600,
+  slidesPerView: "auto",
+  coverflowEffect: {
+    rotate: 10,
+    stretch: 120,
+    depth: 200,
+    modifier: 1,
+    slideShadows: false,
+  },
+    autoplay: {
+      delay: 2500, 
+      disableOnInteraction: false,
+    },
+   on: {
+    click(event) {
+      swiper.slideTo(this.clickedIndex);
+    },
+  },
+  pagination: {
+    el: ".swiper-pagination",
+  },
   });
 }
 
-// Ordinal suffix helper
-function getOrdinalSuffix(n) {
-  const j = n % 10, k = n % 100;
-  if (j == 1 && k != 11) return "st";
-  if (j == 2 && k != 12) return "nd";
-  if (j == 3 && k != 13) return "rd";
-  return "th";
+
+// Modals
+// Modal functionality with smooth animations
+export function setupModal() {
+  const openBtn = document.getElementById("openModalBtn");
+  const modalBackdrop = document.getElementById("modalBackdrop");
+  const closeBtn = document.getElementById("closeModalBtn");
+  const form = document.getElementById("notificationForm");
+
+  if (!openBtn || !modalBackdrop || !closeBtn) {
+    console.error('Modal elements not found');
+    return;
+  }
+
+  // Open modal with animation
+  const openModal = () => {
+    modalBackdrop.classList.add("show");
+    document.body.style.overflow = 'hidden';
+    
+    // Focus first input for better UX
+    setTimeout(() => {
+      const firstInput = modalBackdrop.querySelector('input[type="text"]');
+      if (firstInput) {
+        firstInput.focus();
+      }
+    }, 300);
+  };
+
+  // Close modal with animation
+  const closeModal = () => {
+    modalBackdrop.classList.remove("show");
+    document.body.style.overflow = 'auto';
+    
+    // Reset form after animation completes
+    setTimeout(() => {
+      if (form) {
+        form.reset();
+      }
+    }, 300);
+  };
+
+  // Event listeners
+  openBtn.addEventListener("click", openModal);
+  closeBtn.addEventListener("click", closeModal);
+
+  // Close on backdrop click
+  modalBackdrop.addEventListener("click", (e) => {
+    if (e.target === modalBackdrop) {
+      closeModal();
+    }
+  });
+
+  // Close on Escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modalBackdrop.classList.contains("show")) {
+      closeModal();
+    }
+  });
+
+  // Form submission handler
+  if (form) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      
+      // Get form data
+      const formData = new FormData(form);
+      const data = {
+        heading: formData.get('heading'),
+        date: formData.get('date'),
+        name: formData.get('name'),
+        category: formData.get('category'),
+        description: formData.get('description'),
+        file: formData.get('file')
+      };
+      
+      // Simulate form submission
+      handleFormSubmission(data);
+    });
+  }
+
+  // File upload handler
+  const fileInput = document.getElementById("fileUpload");
+  const fileUploadArea = document.getElementById("fileUploadArea");
+  
+  if (fileInput && fileUploadArea) {
+    // Click to upload
+    fileUploadArea.addEventListener("click", () => {
+      fileInput.click();
+    });
+
+    // Drag and drop functionality
+    fileUploadArea.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      fileUploadArea.style.backgroundColor = "#f0f9ff";
+      fileUploadArea.style.borderColor = "#2563eb";
+    });
+
+    fileUploadArea.addEventListener("dragleave", (e) => {
+      e.preventDefault();
+      fileUploadArea.style.backgroundColor = "";
+      fileUploadArea.style.borderColor = "";
+    });
+
+    fileUploadArea.addEventListener("drop", (e) => {
+      e.preventDefault();
+      fileUploadArea.style.backgroundColor = "";
+      fileUploadArea.style.borderColor = "";
+      
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        fileInput.files = files;
+        updateFileUploadDisplay(files[0]);
+      }
+    });
+
+    // File input change handler
+    fileInput.addEventListener("change", (e) => {
+      if (e.target.files.length > 0) {
+        updateFileUploadDisplay(e.target.files[0]);
+      }
+    });
+  }
+
+  return {
+    open: openModal,
+    close: closeModal
+  };
 }
 
-// Enough distinct colors for classes
-function getClassColor(index) {
-  const colors = [
-    '#007bff', '#6610f2', '#6f42c1', '#e83e8c', '#fd7e14',
-    '#20c997', '#17a2b8', '#ffc107', '#28a745', '#dc3545',
-  ];
-  return colors[(index - 1) % colors.length];
+// Update file upload display
+function updateFileUploadDisplay(file) {
+  const fileUploadArea = document.getElementById("fileUploadArea");
+  const uploadText = fileUploadArea.querySelector(".file-upload-text");
+  const uploadSubtext = fileUploadArea.querySelector(".file-upload-subtext");
+  
+  if (uploadText && uploadSubtext) {
+    uploadText.textContent = `Selected: ${file.name}`;
+    uploadSubtext.textContent = `Size: ${(file.size / 1024).toFixed(1)} KB`;
+    fileUploadArea.style.borderColor = "#10b981";
+    fileUploadArea.style.backgroundColor = "#f0fdf4";
+  }
 }
+
+// Handle form submission
+function handleFormSubmission(data) {
+  const submitBtn = document.querySelector('#notificationForm button[type="submit"]');
+  
+  if (submitBtn) {
+    // Show loading state
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Submitting...';
+    submitBtn.disabled = true;
+    submitBtn.classList.add('loading');
+    
+    // Simulate API call
+    setTimeout(() => {
+      // Reset button
+      submitBtn.textContent = originalText;
+      submitBtn.disabled = false;
+      submitBtn.classList.remove('loading');
+      
+      // Show success message
+      showNotification('Notification created successfully!', 'success');
+      
+      // Close modal
+      const modalBackdrop = document.getElementById("modalBackdrop");
+      modalBackdrop.classList.remove("show");
+      document.body.style.overflow = 'auto';
+      
+      // Reset form
+      const form = document.getElementById("notificationForm");
+      if (form) {
+        form.reset();
+        resetFileUploadDisplay();
+      }
+      
+      console.log('Form submitted:', data);
+    }, 1500);
+  }
+}
+
+// Reset file upload display
+function resetFileUploadDisplay() {
+  const fileUploadArea = document.getElementById("fileUploadArea");
+  const uploadText = fileUploadArea.querySelector(".file-upload-text");
+  const uploadSubtext = fileUploadArea.querySelector(".file-upload-subtext");
+  
+  if (uploadText && uploadSubtext) {
+    uploadText.textContent = "Click to upload or drag & drop";
+    uploadSubtext.textContent = "SVG, PNG, JPG, or PDF";
+    fileUploadArea.style.borderColor = "";
+    fileUploadArea.style.backgroundColor = "";
+  }
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+  const notification = document.createElement('div');
+  notification.className = `notification notification-${type}`;
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    background: ${type === 'success' ? '#10b981' : '#3b82f6'};
+    color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    transform: translateX(400px);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 500;
+  `;
+  notification.textContent = message;
+  
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.style.transform = 'translateX(0)';
+  }, 100);
+  
+  setTimeout(() => {
+    notification.style.transform = 'translateX(400px)';
+    setTimeout(() => {
+      document.body.removeChild(notification);
+    }, 300);
+  }, 3000);
+}
+
+export function initializeModal() {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupModal);
+  } else {
+    setupModal();
+  }
+}
+
+// Tabs
+export function initializeTabs() {
+  const tabs = document.getElementsByClassName('nav-item');
+  const panes = document.getElementsByClassName('tab-pane');
+  let activeEl = tabs[0];
+  let activePane = panes[0];
+
+  function selectTab(el) {
+    activeEl.classList.remove('active');
+    activePane.classList.remove('active');
+
+    activeEl = el;
+    activeEl.classList.add('active');
+
+    const index = Array.from(tabs).indexOf(activeEl);
+    activePane = panes[index];
+    activePane.classList.add('active');
+  }
+  selectTab(activeEl);
+
+  window.selectTab = selectTab;
+}
+
+export { initializeTabs as default };
+
+
+
+// Calendar utilities
+export const CalendarUtils = {
+  months: [
+    'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
+    'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'
+  ],
+  
+  monthsShort: [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ],
+  
+  weekDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+  
+  weekDaysShort: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+  
+  getDaysInMonth: (year, month) => {
+    return new Date(year, month + 1, 0).getDate();
+  },
+  
+  getFirstDayOfMonth: (year, month) => {
+    const firstDay = new Date(year, month, 1).getDay();
+    return firstDay === 0 ? 6 : firstDay - 1;
+  },
+  
+  formatDate: (date) => {
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  },
+  
+  parseDate: (dateString) => {
+    const [day, month, year] = dateString.split('/');
+    return new Date(year, month - 1, day);
+  },
+  
+  isSameDate: (date1, date2) => {
+    return date1.getDate() === date2.getDate() &&
+           date1.getMonth() === date2.getMonth() &&
+           date1.getFullYear() === date2.getFullYear();
+  },
+  
+  getWeekNumber: (date) => {
+    const startDate = new Date(date.getFullYear(), 0, 1);
+    const days = Math.floor((date - startDate) / (24 * 60 * 60 * 1000));
+    return Math.ceil(days / 7);
+  },
+  
+  getWeekDates: (date) => {
+    const startOfWeek = new Date(date);
+    const day = startOfWeek.getDay();
+    const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1);
+    startOfWeek.setDate(diff);
+    
+    const weekDates = [];
+    for (let i = 0; i < 7; i++) {
+      const weekDate = new Date(startOfWeek);
+      weekDate.setDate(startOfWeek.getDate() + i);
+      weekDates.push(weekDate);
+    }
+    return weekDates;
+  },
+  
+  getMonthsInYear: (year) => {
+    return Array.from({ length: 12 }, (_, i) => ({
+      month: i,
+      year: year,
+      name: CalendarUtils.monthsShort[i],
+      daysInMonth: CalendarUtils.getDaysInMonth(year, i),
+      firstDay: CalendarUtils.getFirstDayOfMonth(year, i)
+    }));
+  },
+  
+  isToday: (date) => {
+    const today = new Date();
+    return CalendarUtils.isSameDate(date, today);
+  },
+  
+  isThisMonth: (year, month) => {
+    const today = new Date();
+    return year === today.getFullYear() && month === today.getMonth();
+  },
+  
+  exportToCSV: (events) => {
+    const headers = ['Title', 'Date', 'Time', 'Audience'];
+    const csvContent = [
+      headers.join(','),
+      ...events.map(event => [
+        `"${event.title}"`,
+        event.date,
+        event.time,
+        `"${event.audience}"`
+      ].join(','))
+    ].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'calendar-events.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  },
+  
+  exportToJSON: (events) => {
+    const jsonContent = JSON.stringify(events, null, 2);
+    const blob = new Blob([jsonContent], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'calendar-events.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  },
+  
+  exportToPDF: (events) => {
+    // Simple text-based PDF alternative
+    const content = events.map(event => 
+      `${event.title} - ${event.date} at ${event.time} (${event.audience})`
+    ).join('\n');
+    
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'calendar-events.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+  },
+  
+  getEventsForDate: (events, date) => {
+    const dateStr = CalendarUtils.formatDate(date);
+    return events.filter(event => event.date === dateStr);
+  },
+  
+  getEventsForMonth: (events, year, month) => {
+    return events.filter(event => {
+      const eventDate = CalendarUtils.parseDate(event.date);
+      return eventDate.getFullYear() === year && eventDate.getMonth() === month;
+    });
+  },
+  
+  getEventsForWeek: (events, weekDates) => {
+    return events.filter(event => {
+      const eventDate = CalendarUtils.parseDate(event.date);
+      return weekDates.some(date => CalendarUtils.isSameDate(date, eventDate));
+    });
+  },
+  
+  getEventsForYear: (events, year) => {
+    return events.filter(event => {
+      const eventDate = CalendarUtils.parseDate(event.date);
+      return eventDate.getFullYear() === year;
+    });
+  }
+};

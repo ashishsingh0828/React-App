@@ -3,6 +3,13 @@ import { Routes, Route, NavLink, Navigate } from 'react-router-dom';
 import Dashboard from './Management/Dashboard';
 import FeeManagement from './Management/Fee-Management';
 import StudentTracking from './Management/Student-tracking';
+import Announcement from './Management/Announcement';
+import Event from './Management/Event';
+import Communication from './Management/Communication';
+import Transport from './Management/Transport';
+import Time_Table from './Management/Time_Table';
+import Administration  from './Management/Administration';
+import EmployeeManagement from './Management/Employee';
 import '../assets/css/management.css';
 import { setupToggleMenu, initSidebarHover, notificationToggle } from '../assets/js/main.js';
 
@@ -216,15 +223,23 @@ function Management() {
                             <Route path="dashboard" element={<Dashboard />} /> */}
                              {/* <Route index element={<FeeManagement />} />
                             <Route path="FeeManagement" element={<FeeManagement />} /> */}
-                             <Route index element={<StudentTracking />} />
-                            <Route path="StudentTracking" element={<StudentTracking />} />
+                             {/* <Route index element={<StudentTracking />} />
+                            <Route path="StudentTracking" element={<StudentTracking />} /> */}
+                             {/* <Route index element={<Announcement />} />
+                            <Route path="announcement" element={<Announcement />} /> */}
+                                {/* <Route index element={<Event />} />
+                            <Route path="Event" element={<Event />} /> */}
+                             {/* <Route index element={<Communication />} />
+                            <Route path="Communication" element={<Communication />} /> */}
+                             {/* <Route index element={<Transport />} />
+                            <Route path="Transport" element={<Transport />} /> */}
+                             {/* <Route index element={<Time_Table />} />
+                            <Route path="Time_Table" element={<Time_Table />} /> */}
+                             <Route index element={<Administration />} />
+                            <Route path="Administration" element={<Administration />} />
+                            {/* <Route index element={<EmployeeManagement />} />
+                            <Route path="EmployeeManagement" element={<EmployeeManagement />} /> */}
                             {/* <Route path="school" element={<SchoolManagement />} />
-                            <Route path="administration" element={<Administration />} />
-                            <Route path="announcement" element={<Announcement />} />
-                            <Route path="events" element={<Events />} />
-                            <Route path="communication" element={<Communication />} />
-                            <Route path="timetable" element={<Timetable />} />
-                            <Route path="fees" element={<FeeManagement />} />
                             <Route path="settings" element={<Settings />} /> */}
                         </Routes>
                     </div>
