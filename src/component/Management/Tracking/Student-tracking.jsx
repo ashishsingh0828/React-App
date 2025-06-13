@@ -9,9 +9,9 @@ import {
   generateReport,
   downloadCSV,
   createStudentChart
-} from '../../assets/js/main.js';
-import './management.css'
-import '../../assets/css/animation.css'
+} from '../../../assets/js/main.js';
+import './Track.css'
+import '../../../assets/css/animation.css'
 
 function Studenttracking() {
   const data = null;

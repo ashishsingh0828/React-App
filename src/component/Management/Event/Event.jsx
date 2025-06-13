@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { CalendarUtils } from '../../assets/js/main.js';
-import './management.css'
+import { CalendarUtils } from '../../../assets/js/main.js';
+import './Event.css'
 
 function Event() {
   const [currentDate, setCurrentDate] = useState(new Date());

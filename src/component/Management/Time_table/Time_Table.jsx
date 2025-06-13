@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Printer, Download, Edit, Trash2, X, Save, Calendar, Clock, User, BookOpen } from 'lucide-react';
-import './management.css';
+import './Time.css';
 
 const Time_Table = () => {
   const [viewMode, setViewMode] = useState('teacher');

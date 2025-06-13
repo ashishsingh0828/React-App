@@ -19,7 +19,7 @@ import {
   Award
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import './management.css'
+import './Emloyee.css'
 const EmployeeManagement = () => {
   const [staffData, setStaffData] = useState({
     totalStaff: 156,

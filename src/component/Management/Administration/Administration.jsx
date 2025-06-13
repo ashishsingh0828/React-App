@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, Plus, Edit, Trash2, Eye, Upload, Check, X, Download, Calendar, DollarSign, User, Users, GraduationCap, FileText, Phone, Mail, MapPin, Camera } from 'lucide-react';
-import './management.css';
+import './Administration.css';
 
 const Administration = () => {
   const [activeTab, setActiveTab] = useState('teachers');

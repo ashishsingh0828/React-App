@@ -1,8 +1,8 @@
 import { React, useEffect } from 'react'
 import {
   setupModal, initializeTabs
-} from '../../assets/js/main.js';
-import './management.css'
+} from '../../../assets/js/main.js';
+import './Announcement.css'
 function Announcement() {
  
   useEffect(() => {

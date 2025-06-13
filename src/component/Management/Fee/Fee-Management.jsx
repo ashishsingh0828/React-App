@@ -13,10 +13,10 @@ import {
 filterData, 
   downloadData, 
   getSampleData, 
-  NewCurrency  } from '../../assets/js/main.js';
+  NewCurrency  } from '../../../assets/js/main.js';
 
-import './management.css'
-import '../../assets/css/animation.css'
+import './Fee.css'
+import '../../../assets/css/animation.css'
 
 function FeeManagement() {
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './management.css';
+import './Communication.css';
 
 const Communication = () => {
  const [contacts, setContacts] = useState([
