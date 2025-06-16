@@ -259,14 +259,193 @@ button {
   background: var(--white);
   transition: 0.5s;
 }
-.topbar {
-  width: 100%;
-  height: 60px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 10px;
+
+/* === navbar css start === */
+.navbar-header {
+  height: 4.5rem;
+  background-color: var(--white);
+  position: sticky;
+  top: 0;
+  padding: 1rem 1.5rem;
+  z-index: 2;
 }
+
+.sidebar-toggle,
+.sidebar-mobile-toggle {
+  line-height: 1.2;
+  color: var(--text-primary-light);
+}
+.sidebar-toggle .icon,
+.sidebar-mobile-toggle .icon {
+  font-size: 1.375rem;
+}
+
+.sidebar-toggle {
+  display: none;
+}
+@media (min-width: 1200px) {
+  .sidebar-toggle {
+    display: inline-block;
+  }
+}
+.sidebar-toggle.active .icon.non-active {
+  display: none;
+}
+.sidebar-toggle.active .icon.active {
+  display: inline-block;
+}
+.sidebar-toggle .icon.active {
+  display: none;
+}
+
+.sidebar-mobile-toggle {
+  display: inline-block;
+}
+@media (min-width: 1200px) {
+  .sidebar-mobile-toggle {
+    display: none;
+  }
+}
+
+.navbar-search {
+  position: relative;
+  display: none;
+}
+@media (min-width: 992px) {
+  .navbar-search {
+    display: inline-block;
+  }
+}
+.navbar-search input {
+  width: 24.25rem;
+  height: 2.5rem;
+  background-color: var(--neutral-50);
+  border: 1px solid var(--input-form-light);
+  border-radius: 0.5rem;
+  -webkit-border-radius: 0.5rem;
+  -moz-border-radius: 0.5rem;
+  -ms-border-radius: 0.5rem;
+  -o-border-radius: 0.5rem;
+  padding-block: 0.3125rem;
+  padding-inline-start: 2.625rem;
+  padding-inline-end: 1.25rem;
+  color: var(--text-primary-light);
+}
+.navbar-search input:focus {
+  border-color: var(--brand);
+}
+.navbar-search .icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  inset-inline-start: 0.9375rem;
+  font-size: 1.125rem;
+  color: var(--black);
+}
+
+[data-theme-toggle] {
+  font-size: 0;
+  position: relative;
+}
+[data-theme-toggle]::after {
+  position: absolute;
+  content: "\f1bf";
+  font-family: remixicon;
+  font-style: normal;
+  font-size: 1.25rem;
+  color: var(--text-primary-light);
+}
+[data-theme-toggle][aria-label=dark]::after {
+  content: "\ef6f";
+  color: #fff;
+}
+/* === Dropdown css start === */
+/* Dropdown Css Start */
+.has-indicator {
+  position: relative;
+  transition: 0s;
+}
+.has-indicator.show::before {
+  visibility: visible;
+  opacity: 1;
+}
+.has-indicator::before {
+  position: absolute;
+  content: "";
+  width: 40px;
+  height: 32px;
+  background-color: var(--white);
+  border-radius: 8px;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  visibility: hidden;
+  opacity: 0;
+  transition: 0s;
+  margin-left: -2px;
+  box-shadow: -13px -8px 24px -7px rgba(46, 45, 116, 0.09);
+}
+
+.dropdown > button.show {
+  background-color: var(--primary-50);
+  color: var(--primary-600) !important;
+}
+.dropdown > button.show .text-primary-light {
+  color: var(--primary-600) !important;
+}
+
+.dropdown-menu {
+  border: 0;
+  border-radius: 16px;
+  box-shadow: 0px 13px 30px 10px rgba(46, 45, 116, 0.05);
+  padding: 16px;
+  background-color: var(--white);
+}
+.dropdown-menu.to-top {
+  top: calc(100% - 28px) !important;
+}
+@media (min-width: 575px) {
+  .dropdown-menu-lg {
+    width: 425px;
+  }
+}
+@media (min-width: 375px) {
+  .dropdown-menu-sm {
+    width: 312px;
+  }
+}
+
+/* Dropdown Toggle Custom Icon */
+.toggle-icon.icon-up::after {
+  content: "\ea78" !important;
+}
+.toggle-icon.icon-right::after {
+  content: "\ea6e" !important;
+}
+.toggle-icon.icon-left::before {
+  content: "\ea64" !important;
+  vertical-align: middle !important;
+  border: 0 !important;
+  font-family: remixicon;
+  font-size: 24px;
+  line-height: 0;
+  color: inherit;
+}
+.toggle-icon::after {
+  vertical-align: middle !important;
+  border: 0 !important;
+  content: "\ea4e" !important;
+  font-family: remixicon;
+  font-size: 24px;
+  line-height: 0;
+  color: inherit;
+}
+
+.dropdown > .not-active.show {
+  color: #fff !important;
+}
+
+/* Dropdown Css End */
 .toggle {
   position: relative;
   top: 0;
