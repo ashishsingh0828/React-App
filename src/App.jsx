@@ -30,7 +30,6 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        {/* IMPORTANT: Use /* to allow nested routes */}
         <Route path="/college/*" element={<College />} />
       </Routes>
     </BrowserRouter>

@@ -15,6 +15,7 @@
     "bootstrap": "^5.3.6",
     "chart.js": "^4.4.9",
     "d3": "^7.9.0",
+    "framer-motion": "^12.18.1",
     "lightningcss": "^1.29.3",
     "lucide-react": "^0.507.0",
     "react": "^19.1.0",

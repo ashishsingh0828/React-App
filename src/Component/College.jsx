@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, NavLink, Navigate } from 'react-router-dom';
 import '../assets/css/College.css';
-import Dashboard from './College/Dashbord/Dashboard.jsx';
+import Dashboard from './College/Dashbord/Dashboard';
 
-// Temporary placeholder components for missing imports
-const Administration = () => <div>Administration Component</div>;
-const Announcement = () => <div>Announcement Component</div>;
-const Event = () => <div>Event Component</div>;
-const Communication = () => <div>Communication Component</div>;
-const Time_Table = () => <div>Time Table Component</div>;
-const StudentTracking = () => <div>Student Tracking Component</div>;
-const Transport = () => <div>Transport Component</div>;
-const FeeManagement = () => <div>Fee Management Component</div>;
-const EmployeeManagement = () => <div>Employee Management Component</div>;
+const Administration = () => <div className="page-content">Administration Component</div>;
+const Announcement = () => <div className="page-content">Announcement Component</div>;
+const Event = () => <div className="page-content">Event Component</div>;
+const Communication = () => <div className="page-content">Communication Component</div>;
+const TimeTable = () => <div className="page-content">Time Table Component</div>;
+const StudentTracking = () => <div className="page-content">Student Tracking Component</div>;
+const Transport = () => <div className="page-content">Transport Component</div>;
+const FeeManagement = () => <div className="page-content">Fee Management Component</div>;
+const EmployeeManagement = () => <div className="page-content">Employee Management Component</div>;
 
 function College() {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
@@ -22,42 +21,34 @@ function College() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('english');
+   const [isSticky, setSticky] = useState(false);
+
 
   useEffect(() => {
-    // Load Iconify
-    if (!document.querySelector('script[src*="iconify"]')) {
-      const script = document.createElement('script');
-      script.src = 'https://code.iconify.design/3/3.1.1/iconify.min.js';
-      document.head.appendChild(script);
-    }
+    // Load external scripts
+    const loadScript = (src, module = false) => {
+      if (!document.querySelector(`script[src*="${src.split('/').pop().split('.')[0]}"]`)) {
+        const script = document.createElement('script');
+        if (module) script.type = 'module';
+        script.src = src;
+        document.head.appendChild(script);
+      }
+    };
 
-    // Load Ion Icons
-    if (!document.querySelector('script[src*="ionicons"]')) {
-      const script = document.createElement('script');
-      script.type = 'module';
-      script.src = 'https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js';
-      document.head.appendChild(script);
+    loadScript('https://code.iconify.design/3/3.1.1/iconify.min.js');
+    loadScript('https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js', true);
 
-      const nomoduleScript = document.createElement('script');
-      nomoduleScript.noModule = true;
-      nomoduleScript.src = 'https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js';
-      document.head.appendChild(nomoduleScript);
-    }
-
-    // Initialize theme from localStorage
+    // Initialize theme
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
       setIsDarkMode(true);
       document.documentElement.setAttribute('data-theme', 'dark');
     }
 
-    // Close dropdowns when clicking outside
+    // Handle clicks outside dropdowns
     const handleClickOutside = (event) => {
       if (!event.target.closest('.dropdown')) {
-        setIsNotificationOpen(false);
-        setIsMessageOpen(false);
-        setIsLanguageOpen(false);
-        setIsProfileOpen(false);
+        closeAllDropdowns();
       }
     };
 
@@ -65,14 +56,19 @@ function College() {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  // Handle sidebar toggle
+  const closeAllDropdowns = () => {
+    setIsNotificationOpen(false);
+    setIsMessageOpen(false);
+    setIsLanguageOpen(false);
+    setIsProfileOpen(false);
+  };
+
   const handleSidebarToggle = (e) => {
     e.preventDefault();
     e.stopPropagation();
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  // Handle theme toggle
   const handleThemeToggle = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -82,170 +78,88 @@ function College() {
     document.documentElement.setAttribute('data-theme', newTheme ? 'dark' : 'light');
   };
 
-  // Handle dropdown toggles
-  const handleNotificationToggle = (e) => {
+  const handleDropdownToggle = (dropdown) => (e) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsNotificationOpen(!isNotificationOpen);
-    setIsMessageOpen(false);
-    setIsLanguageOpen(false);
-    setIsProfileOpen(false);
+    
+    closeAllDropdowns();
+    
+    switch (dropdown) {
+      case 'notification':
+        setIsNotificationOpen(true);
+        break;
+      case 'message':
+        setIsMessageOpen(true);
+        break;
+      case 'language':
+        setIsLanguageOpen(true);
+        break;
+      case 'profile':
+        setIsProfileOpen(true);
+        break;
+    }
   };
 
-  const handleMessageToggle = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsMessageOpen(!isMessageOpen);
-    setIsNotificationOpen(false);
-    setIsLanguageOpen(false);
-    setIsProfileOpen(false);
-  };
-
-  const handleLanguageToggle = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsLanguageOpen(!isLanguageOpen);
-    setIsNotificationOpen(false);
-    setIsMessageOpen(false);
-    setIsProfileOpen(false);
-  };
-
-  const handleProfileToggle = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsProfileOpen(!isProfileOpen);
-    setIsNotificationOpen(false);
-    setIsMessageOpen(false);
-    setIsLanguageOpen(false);
-  };
-
-  // Handle language selection
   const handleLanguageSelect = (lang) => {
     setSelectedLanguage(lang);
     setIsLanguageOpen(false);
   };
 
   const languages = [
-    { id: 'english', name: 'English', flag: 'https://laravel.wowdash.wowtheme7.com/assets/images/flags/flag1.png' },
-    { id: 'japan', name: 'Japan', flag: 'https://laravel.wowdash.wowtheme7.com/assets/images/flags/flag2.png' },
-    { id: 'france', name: 'France', flag: 'https://laravel.wowdash.wowtheme7.com/assets/images/flags/flag3.png' },
-    { id: 'germany', name: 'Germany', flag: 'https://laravel.wowdash.wowtheme7.com/assets/images/flags/flag4.png' },
-    { id: 'korea', name: 'South Korea', flag: 'https://laravel.wowdash.wowtheme7.com/assets/images/flags/flag5.png' },
-    { id: 'bangladesh', name: 'Bangladesh', flag: 'https://laravel.wowdash.wowtheme7.com/assets/images/flags/flag6.png' },
-    { id: 'india', name: 'India', flag: 'https://laravel.wowdash.wowtheme7.com/assets/images/flags/flag7.png' },
-    { id: 'canada', name: 'Canada', flag: 'https://laravel.wowdash.wowtheme7.com/assets/images/flags/flag8.png' }
+    { id: 'english', name: 'English', flag: 'https://flagcdn.com/w20/us.png' },
+    { id: 'japan', name: 'Japan', flag: 'https://flagcdn.com/w20/jp.png' },
+    { id: 'france', name: 'France', flag: 'https://flagcdn.com/w20/fr.png' },
+    { id: 'germany', name: 'Germany', flag: 'https://flagcdn.com/w20/de.png' },
+    { id: 'korea', name: 'South Korea', flag: 'https://flagcdn.com/w20/kr.png' },
+    { id: 'bangladesh', name: 'Bangladesh', flag: 'https://flagcdn.com/w20/bd.png' },
+    { id: 'india', name: 'India', flag: 'https://flagcdn.com/w20/in.png' },
+    { id: 'canada', name: 'Canada', flag: 'https://flagcdn.com/w20/ca.png' }
   ];
 
+  const navItems = [
+    { path: '/college/dashboard', icon: 'home-outline', title: 'Dashboard' },
+    { path: '/college/administration', icon: 'people-outline', title: 'Administration' },
+    { path: '/college/announcement', icon: 'megaphone-outline', title: 'Announcement' },
+    { path: '/college/event', icon: 'calendar-outline', title: 'Events' },
+    { path: '/college/communication', icon: 'chatbox-ellipses-outline', title: 'Communication' },
+    { path: '/college/timetable', icon: 'time-outline', title: 'Timetable' },
+    { path: '/college/student-tracking', icon: 'walk-outline', title: 'Student Tracking' },
+    { path: '/college/transport', icon: 'bus-outline', title: 'Transport' },
+    { path: '/college/fee-management', icon: 'card-outline', title: 'Fee Management' },
+    { path: '/college/employee', icon: 'person-outline', title: 'Employee Management' }
+  ];
+ useEffect(() => {
+    const handleScroll = () => {
+      setSticky(window.scrollY > 70); 
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   return (
-    <div className="container">
+    <div className="app-container">
+      {/* Sidebar Navigation */}
       <div className={`navigation ${isSidebarOpen ? 'active' : ''}`}>
         <ul className="nav-list">
-          <li>
+          <li className="nav-brand">
             <NavLink to="#" className="nav-link" onClick={(e) => e.preventDefault()}>
               <span className="icon"><ion-icon name="school-outline"></ion-icon></span>
-              <span className="title">School Management</span>
+              <span className="title">College Management</span>
             </NavLink>
           </li>
-          <li>
-            <NavLink
-              to="/college/dashboard"
-              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-              onClick={() => setIsSidebarOpen(false)}
-            >
-              <span className="icon"><ion-icon name="home-outline"></ion-icon></span>
-              <span className="title">Dashboard</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/college/administration"
-              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-              onClick={() => setIsSidebarOpen(false)}
-            >
-              <span className="icon"><ion-icon name="people-outline"></ion-icon></span>
-              <span className="title">Administration</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/college/announcement"
-              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-              onClick={() => setIsSidebarOpen(false)}
-            >
-              <span className="icon"><ion-icon name="megaphone-outline"></ion-icon></span>
-              <span className="title">Announcement</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/college/event"
-              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-              onClick={() => setIsSidebarOpen(false)}
-            >
-              <span className="icon"><ion-icon name="calendar-outline"></ion-icon></span>
-              <span className="title">Events</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/college/communication"
-              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-              onClick={() => setIsSidebarOpen(false)}
-            >
-              <span className="icon"><ion-icon name="chatbox-ellipses-outline"></ion-icon></span>
-              <span className="title">Communication</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/college/timetable"
-              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-              onClick={() => setIsSidebarOpen(false)}
-            >
-              <span className="icon"><ion-icon name="time-outline"></ion-icon></span>
-              <span className="title">Timetable</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/college/student-tracking"
-              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-              onClick={() => setIsSidebarOpen(false)}
-            >
-              <span className="icon"><ion-icon name="walk-outline"></ion-icon></span>
-              <span className="title">Student Tracking</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/college/transport"
-              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-              onClick={() => setIsSidebarOpen(false)}
-            >
-              <span className="icon"><ion-icon name="bus-outline"></ion-icon></span>
-              <span className="title">Transport</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/college/fee-management"
-              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-              onClick={() => setIsSidebarOpen(false)}
-            >
-              <span className="icon"><ion-icon name="card-outline"></ion-icon></span>
-              <span className="title">Fee Management</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/college/employee"
-              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-              onClick={() => setIsSidebarOpen(false)}
-            >
-              <span className="icon"><ion-icon name="person-outline"></ion-icon></span>
-              <span className="title">Employee Management</span>
-            </NavLink>
-          </li>
+          {navItems.map((item) => (
+            <li key={item.path}>
+              <NavLink
+                to={item.path}
+                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                onClick={() => setIsSidebarOpen(false)}
+              >
+                <span className="icon"><ion-icon name={item.icon}></ion-icon></span>
+                <span className="title">{item.title}</span>
+              </NavLink>
+            </li>
+          ))}
           <li>
             <NavLink to="#" className="nav-link" onClick={(e) => e.preventDefault()}>
               <span className="icon"><ion-icon name="settings-outline"></ion-icon></span>
@@ -255,258 +169,205 @@ function College() {
         </ul>
       </div>
 
-      <div className="main">
-        <div className="navbar-header">
-          <div className="flex flex-wrap items-center justify-between">
-            <div className="flex-auto">
-              <div className="flex flex-wrap items-center gap-4">
-                <button 
-                  type="button" 
-                  className={`sidebar-toggle ${isSidebarOpen ? 'active' : ''}`}
-                  onClick={handleSidebarToggle}
-                >
-                  <iconify-icon icon="heroicons:bars-3-solid" className="text-2xl non-active"></iconify-icon>
-                  <iconify-icon icon="iconoir:arrow-right" className="text-2xl active"></iconify-icon>
-                </button>
-                <button 
-                  type="button" 
-                  className="sidebar-mobile-toggle"
-                  onClick={handleSidebarToggle}
-                >
-                  <iconify-icon icon="heroicons:bars-3-solid" className="text-2xl"></iconify-icon>
-                </button>
-                <form className="navbar-search relative">
-                  <input 
-                    type="text" 
-                    name="search" 
-                    placeholder="Search" 
-                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300" 
-                  />
-                  <iconify-icon icon="ion:search-outline" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></iconify-icon>
-                </form>
-              </div>
+      {/* Main Content */}
+      <div className={`main ${isSidebarOpen ? 'sidebar-active' : ''}`}>
+        {/* Header */}
+      <header className={`navbar-header ${isSticky ? "sticky" : ""}`}>
+          <div className="navbar-content">
+            <div className="navbar-left">
+              <button 
+                type="button" 
+                className={`sidebar-toggle ${isSidebarOpen ? 'active' : ''}`}
+                onClick={handleSidebarToggle}
+              >
+                <iconify-icon icon="heroicons:bars-3-solid" className="icon non-active"></iconify-icon>
+                <iconify-icon icon="iconoir:arrow-right" className="icon active"></iconify-icon>
+              </button>
+              
+              <form className="navbar-search">
+                <input 
+                  type="text" 
+                  name="search" 
+                  placeholder="Search..." 
+                  className="search-input" 
+                />
+                <iconify-icon icon="ion:search-outline" className="search-icon"></iconify-icon>
+              </form>
             </div>
-            <div className="flex-auto">
-              <div className="flex flex-wrap items-center gap-3 justify-end">
-                {/* Theme Toggle Button */}
+
+            <div className="navbar-right">
+              {/* Theme Toggle */}
+              <button 
+                type="button" 
+                className="theme-toggle"
+                onClick={handleThemeToggle}
+                data-theme-toggle
+                aria-label={isDarkMode ? 'dark' : 'light'}
+              ></button>
+
+              {/* Language Dropdown */}
+              <div className="dropdown">
                 <button 
+                  className={`dropdown-btn ${isLanguageOpen ? 'show' : ''}`}
                   type="button" 
-                  className="w-10 h-10 bg-neutral-200 rounded-full flex justify-center items-center"
-                  onClick={handleThemeToggle}
-                  data-theme-toggle
-                  aria-label={isDarkMode ? 'dark' : 'light'}
-                ></button>
+                  onClick={handleDropdownToggle('language')}
+                >
+                  <img 
+                    src={languages.find(l => l.id === selectedLanguage)?.flag || languages[0].flag} 
+                    alt="language" 
+                    className="flag-icon" 
+                  />
+                </button>
 
-                {/* Language Dropdown */}
-                <div className="relative dropdown hidden sm:inline-block">
-                  <button 
-                    className={`has-indicator w-10 h-10 bg-neutral-200 rounded-full flex justify-center items-center ${isLanguageOpen ? 'show' : ''}`}
-                    type="button" 
-                    onClick={handleLanguageToggle}
-                  >
-                    <img 
-                      src={languages.find(l => l.id === selectedLanguage)?.flag || languages[0].flag} 
-                      alt="language" 
-                      className="w-6 h-6 object-cover rounded-full" 
-                    />
-                  </button>
+                {isLanguageOpen && (
+                  <div className="dropdown-menu language-dropdown">
+                    <div className="dropdown-header">
+                      <h6>Choose Your Language</h6>
+                    </div>
+                    <div className="dropdown-content">
+                      {languages.map((lang) => (
+                        <div key={lang.id} className="language-item" onClick={() => handleLanguageSelect(lang.id)}>
+                          <img src={lang.flag} alt={lang.name} className="flag-icon" />
+                          <span>{lang.name}</span>
+                          <input 
+                            type="radio" 
+                            name="language" 
+                            checked={selectedLanguage === lang.id}
+                            onChange={() => handleLanguageSelect(lang.id)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
 
-                  {isLanguageOpen && (
-                    <div className="dropdown-menu to-top dropdown-menu-sm absolute z-50 mt-2">
-                      <div className="py-3 px-4 rounded-lg bg-primary-50 mb-4 flex items-center justify-between gap-2">
-                        <div>
-                          <h6 className="text-lg text-primary-light font-semibold mb-0">Choose Your Language</h6>
+              {/* Messages Dropdown */}
+              <div className="dropdown">
+                <button 
+                  className={`dropdown-btn ${isMessageOpen ? 'show' : ''}`}
+                  type="button" 
+                  onClick={handleDropdownToggle('message')}
+                >
+                  <iconify-icon icon="mage:email" className="dropdown-icon"></iconify-icon>
+                </button>
+                
+                {isMessageOpen && (
+                  <div className="dropdown-menu message-dropdown">
+                    <div className="dropdown-header">
+                      <h6>Messages</h6>
+                      <span className="badge">5</span>
+                    </div>
+                    <div className="dropdown-content">
+                      <div className="message-item">
+                        <img src="https://via.placeholder.com/40" alt="profile" className="message-avatar" />
+                        <div className="message-content">
+                          <h6>John Doe</h6>
+                          <p>Hey! How are you doing?</p>
+                        </div>
+                        <div className="message-meta">
+                          <span>12:30 PM</span>
+                          <span className="unread-badge">2</span>
                         </div>
                       </div>
-
-                      <div className="max-h-[400px] overflow-y-auto scroll-sm pe-2">
-                        {languages.map((lang) => (
-                          <div key={lang.id} className="form-check style-check flex items-center justify-between mb-4">
-                            <label 
-                              className="form-check-label leading-none font-medium text-secondary-light cursor-pointer"
-                              onClick={() => handleLanguageSelect(lang.id)}
-                            >
-                              <span className="text-black hover:bg-transparent hover:text-primary flex items-center gap-3">
-                                <img 
-                                  src={lang.flag} 
-                                  alt={lang.name} 
-                                  className="w-9 h-9 bg-green-100 text-green-600 rounded-full shrink-0" 
-                                />
-                                <span className="text-md font-semibold mb-0">{lang.name}</span>
-                              </span>
-                            </label>
-                            <input 
-                              className="form-check-input" 
-                              type="radio" 
-                              name="language" 
-                              checked={selectedLanguage === lang.id}
-                              onChange={() => handleLanguageSelect(lang.id)}
-                            />
-                          </div>
-                        ))}
-                      </div>
                     </div>
-                  )}
-                </div>
+                    <div className="dropdown-footer">
+                      <a href="#messages">See All Messages</a>
+                    </div>
+                  </div>
+                )}
+              </div>
 
-                {/* Messages Dropdown */}
-                <div className="relative dropdown">
-                  <button 
-                    className={`has-indicator w-[40px] h-[40px] bg-neutral-200 rounded-full flex justify-center items-center ${isMessageOpen ? 'show' : ''}`}
-                    type="button" 
-                    onClick={handleMessageToggle}
-                  >
-                    <iconify-icon icon="mage:email" className="text-primary-light text-xl"></iconify-icon>
-                  </button>
-                  
-                  {isMessageOpen && (
-                    <div className="dropdown-menu to-top dropdown-menu-lg p-0 absolute z-50 right-0">
-                      <div className="m-[16px] py-[12px] px-[16px] rounded-lg bg-primary-50 mb-[16px] flex items-center justify-between gap-2">
-                        <div>
-                          <h6 className="text-lg text-primary-light font-semibold mb-0">Message</h6>
+              {/* Notifications Dropdown */}
+              <div className="dropdown">
+                <button 
+                  className={`dropdown-btn ${isNotificationOpen ? 'show' : ''}`}
+                  type="button" 
+                  onClick={handleDropdownToggle('notification')}
+                >
+                  <iconify-icon icon="iconoir:bell" className="dropdown-icon"></iconify-icon>
+                </button>
+                
+                {isNotificationOpen && (
+                  <div className="dropdown-menu notification-dropdown">
+                    <div className="dropdown-header">
+                      <h6>Notifications</h6>
+                      <span className="badge">3</span>
+                    </div>
+                    <div className="dropdown-content">
+                      <div className="notification-item">
+                        <div className="notification-icon success">
+                          <iconify-icon icon="bitcoin-icons:verify-outline"></iconify-icon>
                         </div>
-                        <span className="text-primary-600 font-semibold text-lg w-[40px] h-[40px] rounded-full bg-base flex justify-center items-center">05</span>
-                      </div>
-
-                      <div className="max-h-[400px] overflow-y-auto scroll-sm pe-[16px]">
-                        <a href="javascript:void(0)" className="px-[24px] py-[12px] flex items-start gap-3 mb-2 justify-between">
-                          <div className="text-black hover:bg-transparent hover:text-primary flex items-center gap-3">
-                            <span className="w-[40px] h-[40px] rounded-full flex-shrink-0 relative">
-                              <img src="https://laravel.wowdash.wowtheme7.com/assets/images/notification/profile-3.png" alt="" />
-                              <span className="w-[8px] h-[8px] bg-success-main rounded-full absolute right-0 bottom-0"></span>
-                            </span>
-                            <div>
-                              <h6 className="text-md font-semibold mb-[4px]">Kathryn Murphy</h6>
-                              <p className="mb-0 text-sm text-secondary-light w-[100px]">hey! there i'm...</p>
-                            </div>
-                          </div>
-                          <div className="flex flex-col items-end">
-                            <span className="text-sm text-secondary-light flex-shrink-0">12:30 PM</span>
-                            <span className="mt-[4px] text-xs text-base w-[16px] h-[16px] flex justify-center items-center bg-warning-main rounded-full">8</span>
-                          </div>
-                        </a>
-                      </div>
-
-                      <div className="text-center py-[12px] px-[16px]">
-                        <a href="javascript:void(0)" className="text-primary-600 font-semibold text-md">See All Message</a>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Notifications Dropdown */}
-                <div className="relative dropdown">
-                  <button 
-                    className={`has-indicator w-[40px] h-[40px] bg-neutral-200 rounded-full flex justify-center items-center ${isNotificationOpen ? 'show' : ''}`}
-                    type="button" 
-                    onClick={handleNotificationToggle}
-                  >
-                    <iconify-icon icon="iconoir:bell" className="text-primary-light text-xl"></iconify-icon>
-                  </button>
-                  
-                  {isNotificationOpen && (
-                    <div className="dropdown-menu to-top dropdown-menu-lg p-0 absolute right-0 z-50">
-                      <div className="m-[16px] py-[12px] px-[16px] radius-8 bg-primary-50 mb-[16px] flex items-center justify-between gap-2">
-                        <div>
-                          <h6 className="text-lg text-primary-light font-semibold mb-0">Notifications</h6>
+                        <div className="notification-content">
+                          <h6>Congratulations</h6>
+                          <p>Your profile has been verified.</p>
                         </div>
-                        <span className="text-primary-600 font-semibold text-lg w-[40px] h-[40px] rounded-full bg-base flex justify-center items-center">05</span>
-                      </div>
-
-                      <div className="max-h-[400px] overflow-y-auto scroll-sm pe-4">
-                        <a href="javascript:void(0)" className="px-[24px] py-[12px] flex items-start gap-3 mb-2 justify-between">
-                          <div className="text-black hover:bg-transparent hover:text-primary flex items-center gap-3">
-                            <span className="w-[44px] h-[44px] bg-success-subtle text-success-main rounded-full flex justify-center items-center flex-shrink-0">
-                              <iconify-icon icon="bitcoin-icons:verify-outline" className="icon text-xxl"></iconify-icon>
-                            </span>
-                            <div>
-                              <h6 className="text-md font-semibold mb-4">Congratulations</h6>
-                              <p className="mb-0 text-sm text-secondary-light text-w-200-px">Your profile has been Verified.</p>
-                            </div>
-                          </div>
-                          <span className="text-sm text-secondary-light flex-shrink-0">23 Mins ago</span>
-                        </a>
-                      </div>
-
-                      <div className="text-center py-[12px] px-[16px]">
-                        <a href="javascript:void(0)" className="text-primary-600 font-semibold text-md">See All Notification</a>
+                        <span className="notification-time">23 mins ago</span>
                       </div>
                     </div>
-                  )}
-                </div>
-
-                {/* Profile Dropdown */}
-                <div className="relative dropdown">
-                  <button 
-                    className="flex justify-center items-center rounded-full" 
-                    type="button" 
-                    onClick={handleProfileToggle}
-                  >
-                    <img 
-                      src="https://laravel.wowdash.wowtheme7.com/assets/images/user.png" 
-                      alt="profile" 
-                      className="w-[40px] h-[40px] object-cover rounded-full" 
-                    />
-                  </button>
-
-                  {isProfileOpen && (
-                    <div className="dropdown-menu to-top dropdown-menu-sm absolute right-0 z-50 mt-2 w-64 bg-white shadow-lg rounded-lg overflow-hidden">
-                      <div className="py-3 px-4 bg-primary-50 mb-4 flex items-center justify-between gap-2">
-                        <div>
-                          <h6 className="text-lg text-primary-light font-semibold mb-1">Shaidul Islam</h6>
-                          <span className="text-sm text-secondary-light font-medium">Admin</span>
-                        </div>
-                        <button type="button" className="hover:text-danger" onClick={() => setIsProfileOpen(false)}>
-                          <iconify-icon icon="radix-icons:cross-1" className="text-xl"></iconify-icon>
-                        </button>
-                      </div>
-
-                      <ul>
-                        <li>
-                          <a className="block text-black px-4 py-2 hover:bg-transparent hover:text-primary flex items-center gap-3" href="#profile">
-                            <iconify-icon icon="solar:user-linear" className="text-xl"></iconify-icon> My Profile
-                          </a>
-                        </li>
-                        <li>
-                          <a className="block text-black px-4 py-2 hover:bg-transparent hover:text-primary flex items-center gap-3" href="#inbox">
-                            <iconify-icon icon="tabler:message-check" className="text-xl"></iconify-icon> Inbox
-                          </a>
-                        </li>
-                        <li>
-                          <a className="block text-black px-4 py-2 hover:bg-transparent hover:text-primary flex items-center gap-3" href="#settings">
-                            <iconify-icon icon="icon-park-outline:setting-two" className="text-xl"></iconify-icon> Setting
-                          </a>
-                        </li>
-                        <li>
-                          <a className="block text-black px-4 py-2 hover:bg-transparent hover:text-danger flex items-center gap-3" href="javascript:void(0)">
-                            <iconify-icon icon="lucide:power" className="text-xl"></iconify-icon> Log Out
-                          </a>
-                        </li>
-                      </ul>
+                    <div className="dropdown-footer">
+                      <a href="#notifications">See All Notifications</a>
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Profile Dropdown */}
+              <div className="dropdown">
+                <button 
+                  className="profile-btn" 
+                  type="button" 
+                  onClick={handleDropdownToggle('profile')}
+                >
+                  <img 
+                    src="https://via.placeholder.com/40" 
+                    alt="profile" 
+                    className="profile-avatar" 
+                  />
+                </button>
+
+                {isProfileOpen && (
+                  <div className="dropdown-menu profile-dropdown">
+                    <div className="dropdown-header profile-header">
+                      <div>
+                        <h6>John Doe</h6>
+                        <span>Administrator</span>
+                      </div>
+                      <button onClick={() => setIsProfileOpen(false)}>
+                        <iconify-icon icon="radix-icons:cross-1"></iconify-icon>
+                      </button>
+                    </div>
+                    <ul className="profile-menu">
+                      <li><a href="#profile"><iconify-icon icon="solar:user-linear"></iconify-icon> My Profile</a></li>
+                      <li><a href="#inbox"><iconify-icon icon="tabler:message-check"></iconify-icon> Inbox</a></li>
+                      <li><a href="#settings"><iconify-icon icon="icon-park-outline:setting-two"></iconify-icon> Settings</a></li>
+                      <li><a href="#logout" className="logout"><iconify-icon icon="lucide:power"></iconify-icon> Log Out</a></li>
+                    </ul>
+                  </div>
+                )}
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </header>
 
-      <div className="content-area">
-        <Routes>
-          <Route index element={<Navigate to="/college/dashboard" replace />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="administration" element={<Administration />} />
-          <Route path="announcement" element={<Announcement />} />
-          <Route path="event" element={<Event />} />
-          <Route path="communication" element={<Communication />} />
-          <Route path="timetable" element={<Time_Table />} />
-          <Route path="student-tracking" element={<StudentTracking />} />
-          <Route path="transport" element={<Transport />} />
-          <Route path="fee-management" element={<FeeManagement />} />
-          <Route path="employee" element={<EmployeeManagement />} />
-          <Route path="*" element={<Navigate to="/college/dashboard" replace />} />
-        </Routes>
+        {/* Content Area */}
+        <div className="content-area">
+          <Routes>
+            <Route index element={<Navigate to="/college/dashboard" replace />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="administration" element={<Administration />} />
+            <Route path="announcement" element={<Announcement />} />
+            <Route path="event" element={<Event />} />
+            <Route path="communication" element={<Communication />} />
+            <Route path="timetable" element={<TimeTable />} />
+            <Route path="student-tracking" element={<StudentTracking />} />
+            <Route path="transport" element={<Transport />} />
+            <Route path="fee-management" element={<FeeManagement />} />
+            <Route path="employee" element={<EmployeeManagement />} />
+            <Route path="*" element={<Navigate to="/college/dashboard" replace />} />
+          </Routes>
+        </div>
       </div>
     </div>
   );
