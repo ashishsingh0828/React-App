@@ -1,0 +1,19 @@
+.chat-section {
+    box-shadow: inset 0px 160px 0 0 var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chat-container {
+    height: 720px;
+    width: 100%;
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.1);
+    background: var(--white);
+}
+
+
+/* sidebar */
+
+
+/* icons */

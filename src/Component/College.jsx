@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Routes, Route, NavLink, Navigate } from 'react-router-dom';
 import '../assets/css/College.css';
 import Dashboard from './College/Dashbord/Dashboard';
+import Chat from './College/Chat/Chat';
+import Event from './College/Event/Event'
 
 const Administration = () => <div className="page-content">Administration Component</div>;
 const Announcement = () => <div className="page-content">Announcement Component</div>;
-const Event = () => <div className="page-content">Event Component</div>;
-const Communication = () => <div className="page-content">Communication Component</div>;
 const TimeTable = () => <div className="page-content">Time Table Component</div>;
 const StudentTracking = () => <div className="page-content">Student Tracking Component</div>;
 const Transport = () => <div className="page-content">Transport Component</div>;
@@ -119,9 +119,9 @@ function College() {
   const navItems = [
     { path: '/college/dashboard', icon: 'home-outline', title: 'Dashboard' },
     { path: '/college/administration', icon: 'people-outline', title: 'Administration' },
+      { path: '/college/chat', icon: 'people-outline', title: 'Chat' },
     { path: '/college/announcement', icon: 'megaphone-outline', title: 'Announcement' },
     { path: '/college/event', icon: 'calendar-outline', title: 'Events' },
-    { path: '/college/communication', icon: 'chatbox-ellipses-outline', title: 'Communication' },
     { path: '/college/timetable', icon: 'time-outline', title: 'Timetable' },
     { path: '/college/student-tracking', icon: 'walk-outline', title: 'Student Tracking' },
     { path: '/college/transport', icon: 'bus-outline', title: 'Transport' },
@@ -130,7 +130,7 @@ function College() {
   ];
  useEffect(() => {
     const handleScroll = () => {
-      setSticky(window.scrollY > 70); 
+      setSticky(window.scrollY > 100); 
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -359,7 +359,7 @@ function College() {
             <Route path="administration" element={<Administration />} />
             <Route path="announcement" element={<Announcement />} />
             <Route path="event" element={<Event />} />
-            <Route path="communication" element={<Communication />} />
+            <Route path="chat" element={<Chat />} />
             <Route path="timetable" element={<TimeTable />} />
             <Route path="student-tracking" element={<StudentTracking />} />
             <Route path="transport" element={<Transport />} />
