@@ -1,0 +1,23 @@
+.home-container {
+    padding: 20px;
+    text-align: center;
+}
+
+.home-container .link-container {
+    margin-top: 20px;
+}
+
+.home-container .nav-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.home-container .nav-link:hover {
+    background-color: #0056b3;
+}
