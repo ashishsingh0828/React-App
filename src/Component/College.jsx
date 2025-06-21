@@ -4,9 +4,9 @@ import '../assets/css/College.css';
 import Dashboard from './College/Dashbord/Dashboard';
 import Chat from './College/Chat/Chat';
 import Event from './College/Event/Event'
+import Announcement from './College/Announcement/announcement'
 
-const Administration = () => <div className="page-content">Administration Component</div>;
-const Announcement = () => <div className="page-content">Announcement Component</div>;
+const Administration = () => <div className="page-content">Time Table Component</div>;
 const TimeTable = () => <div className="page-content">Time Table Component</div>;
 const StudentTracking = () => <div className="page-content">Student Tracking Component</div>;
 const Transport = () => <div className="page-content">Transport Component</div>;
@@ -357,7 +357,7 @@ function College() {
             <Route index element={<Navigate to="/college/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="administration" element={<Administration />} />
-            <Route path="announcement" element={<Announcement />} />
+           <Route path="announcement" element={<Announcement />} />
             <Route path="event" element={<Event />} />
             <Route path="chat" element={<Chat />} />
             <Route path="timetable" element={<TimeTable />} />
