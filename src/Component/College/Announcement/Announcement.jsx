@@ -9,7 +9,7 @@ function Announcement() {
         <Calendar></Calendar>
       </div>
       <div className="table">
-<AnnouncementManager/>
+        <AnnouncementManager />
       </div>
     </div>
   )
