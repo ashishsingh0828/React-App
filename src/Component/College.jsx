@@ -5,11 +5,11 @@ import Dashboard from './College/Dashbord/Dashboard';
 import Chat from './College/Chat/Chat';
 import Event from './College/Event/Event'
 import Announcement from './College/Announcement/announcement'
+import Transport from './College/Transport Mangament/Transport';
 
 const Administration = () => <div className="page-content">Time Table Component</div>;
 const TimeTable = () => <div className="page-content">Time Table Component</div>;
 const StudentTracking = () => <div className="page-content">Student Tracking Component</div>;
-const Transport = () => <div className="page-content">Transport Component</div>;
 const FeeManagement = () => <div className="page-content">Fee Management Component</div>;
 const EmployeeManagement = () => <div className="page-content">Employee Management Component</div>;
 
@@ -124,7 +124,7 @@ function College() {
     { path: '/college/event', icon: 'calendar-outline', title: 'Events' },
     { path: '/college/timetable', icon: 'time-outline', title: 'Timetable' },
     { path: '/college/student-tracking', icon: 'walk-outline', title: 'Student Tracking' },
-    { path: '/college/transport', icon: 'bus-outline', title: 'Transport' },
+    { path: '/college/transport/transport', icon: 'bus-outline', title: 'Transport' },
     { path: '/college/fee-management', icon: 'card-outline', title: 'Fee Management' },
     { path: '/college/employee', icon: 'person-outline', title: 'Employee Management' }
   ];
@@ -362,7 +362,7 @@ function College() {
             <Route path="chat" element={<Chat />} />
             <Route path="timetable" element={<TimeTable />} />
             <Route path="student-tracking" element={<StudentTracking />} />
-            <Route path="transport" element={<Transport />} />
+            <Route path="transport/transport" element={<Transport />} />
             <Route path="fee-management" element={<FeeManagement />} />
             <Route path="employee" element={<EmployeeManagement />} />
             <Route path="*" element={<Navigate to="/college/dashboard" replace />} />
