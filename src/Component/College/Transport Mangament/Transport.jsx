@@ -4,15 +4,18 @@ import BusRoutes from './Route/Route';
 import DriverManagement from './Driver/Driver';
 import VehicleDetails from './Bus/Bus';
 import ScheduleManagement from './Schedule/Schedule';
-
+import StudentTransportMap from './StudentMap/StudentTranport';;
+import TransportReport from './TransportReport/Transport';
 function Transport() {
   return (
     <div>
-{/* <TDashboard/> */}
-{/* <BusRoutes/> */}
-{/* <DriverManagement/> */}
-{/* <VehicleDetails/> */}
+<TDashboard/>
+<BusRoutes/>
+<DriverManagement/>
+<VehicleDetails/>
 <ScheduleManagement/>
+<StudentTransportMap/>
+<TransportReport/>
     </div>
   )
 }

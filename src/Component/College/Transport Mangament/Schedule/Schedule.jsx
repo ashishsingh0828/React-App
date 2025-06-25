@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './Schedule.css';
 
 const ScheduleManagement = () => {
-  // Sample data
   const [drivers, setDrivers] = useState([
     { id: 'driver_1', name: 'Mr. A' },
     { id: 'driver_2', name: 'Ms. B' },
