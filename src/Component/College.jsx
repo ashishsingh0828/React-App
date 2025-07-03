@@ -6,6 +6,9 @@ import Chat from './College/Chat/Chat';
 import Event from './College/Event/Event'
 import Announcement from './College/Announcement/announcement'
 import Transport from './College/Transport Mangament/Transport';
+import Attendance from './College/Attendance/Attendance';
+import Admission from './College/Admission/Admission';
+import Track from './College/Track/Track';
 
 const Administration = () => <div className="page-content">Time Table Component</div>;
 const TimeTable = () => <div className="page-content">Time Table Component</div>;
@@ -21,7 +24,7 @@ function College() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('english');
-   const [isSticky, setSticky] = useState(false);
+  const [isSticky, setSticky] = useState(false);
 
 
   useEffect(() => {
@@ -81,9 +84,9 @@ function College() {
   const handleDropdownToggle = (dropdown) => (e) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     closeAllDropdowns();
-    
+
     switch (dropdown) {
       case 'notification':
         setIsNotificationOpen(true);
@@ -119,7 +122,10 @@ function College() {
   const navItems = [
     { path: '/college/dashboard', icon: 'home-outline', title: 'Dashboard' },
     { path: '/college/administration', icon: 'people-outline', title: 'Administration' },
-      { path: '/college/chat', icon: 'people-outline', title: 'Chat' },
+    { path: '/college/attendance', icon: 'people-outline', title: 'Attendance' },
+    { path: '/college/track', icon: 'time-outline', title: 'Track' },
+    { path: '/college/admission', icon: 'people-outline', title: 'Admission' },
+    { path: '/college/chat', icon: 'people-outline', title: 'Chat' },
     { path: '/college/announcement', icon: 'megaphone-outline', title: 'Announcement' },
     { path: '/college/event', icon: 'calendar-outline', title: 'Events' },
     { path: '/college/timetable', icon: 'time-outline', title: 'Timetable' },
@@ -128,9 +134,9 @@ function College() {
     { path: '/college/fee-management', icon: 'card-outline', title: 'Fee Management' },
     { path: '/college/employee', icon: 'person-outline', title: 'Employee Management' }
   ];
- useEffect(() => {
+  useEffect(() => {
     const handleScroll = () => {
-      setSticky(window.scrollY > 100); 
+      setSticky(window.scrollY > 100);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -172,24 +178,24 @@ function College() {
       {/* Main Content */}
       <div className={`main ${isSidebarOpen ? 'sidebar-active' : ''}`}>
         {/* Header */}
-      <header className={`navbar-header ${isSticky ? "sticky" : ""}`}>
+        <header className={`navbar-header ${isSticky ? "sticky" : ""}`}>
           <div className="navbar-content">
             <div className="navbar-left">
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className={`sidebar-toggle ${isSidebarOpen ? 'active' : ''}`}
                 onClick={handleSidebarToggle}
               >
                 <iconify-icon icon="heroicons:bars-3-solid" className="icon non-active"></iconify-icon>
                 <iconify-icon icon="iconoir:arrow-right" className="icon active"></iconify-icon>
               </button>
-              
+
               <form className="navbar-search">
-                <input 
-                  type="text" 
-                  name="search" 
-                  placeholder="Search..." 
-                  className="search-input" 
+                <input
+                  type="text"
+                  name="search"
+                  placeholder="Search..."
+                  className="search-input"
                 />
                 <iconify-icon icon="ion:search-outline" className="search-icon"></iconify-icon>
               </form>
@@ -197,8 +203,8 @@ function College() {
 
             <div className="navbar-right">
               {/* Theme Toggle */}
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="theme-toggle"
                 onClick={handleThemeToggle}
                 data-theme-toggle
@@ -207,15 +213,15 @@ function College() {
 
               {/* Language Dropdown */}
               <div className="dropdown">
-                <button 
+                <button
                   className={`dropdown-btn ${isLanguageOpen ? 'show' : ''}`}
-                  type="button" 
+                  type="button"
                   onClick={handleDropdownToggle('language')}
                 >
-                  <img 
-                    src={languages.find(l => l.id === selectedLanguage)?.flag || languages[0].flag} 
-                    alt="language" 
-                    className="flag-icon" 
+                  <img
+                    src={languages.find(l => l.id === selectedLanguage)?.flag || languages[0].flag}
+                    alt="language"
+                    className="flag-icon"
                   />
                 </button>
 
@@ -229,9 +235,9 @@ function College() {
                         <div key={lang.id} className="language-item" onClick={() => handleLanguageSelect(lang.id)}>
                           <img src={lang.flag} alt={lang.name} className="flag-icon" />
                           <span>{lang.name}</span>
-                          <input 
-                            type="radio" 
-                            name="language" 
+                          <input
+                            type="radio"
+                            name="language"
                             checked={selectedLanguage === lang.id}
                             onChange={() => handleLanguageSelect(lang.id)}
                           />
@@ -244,14 +250,14 @@ function College() {
 
               {/* Messages Dropdown */}
               <div className="dropdown">
-                <button 
+                <button
                   className={`dropdown-btn ${isMessageOpen ? 'show' : ''}`}
-                  type="button" 
+                  type="button"
                   onClick={handleDropdownToggle('message')}
                 >
                   <iconify-icon icon="mage:email" className="dropdown-icon"></iconify-icon>
                 </button>
-                
+
                 {isMessageOpen && (
                   <div className="dropdown-menu message-dropdown">
                     <div className="dropdown-header">
@@ -280,14 +286,14 @@ function College() {
 
               {/* Notifications Dropdown */}
               <div className="dropdown">
-                <button 
+                <button
                   className={`dropdown-btn ${isNotificationOpen ? 'show' : ''}`}
-                  type="button" 
+                  type="button"
                   onClick={handleDropdownToggle('notification')}
                 >
                   <iconify-icon icon="iconoir:bell" className="dropdown-icon"></iconify-icon>
                 </button>
-                
+
                 {isNotificationOpen && (
                   <div className="dropdown-menu notification-dropdown">
                     <div className="dropdown-header">
@@ -315,15 +321,15 @@ function College() {
 
               {/* Profile Dropdown */}
               <div className="dropdown">
-                <button 
-                  className="profile-btn" 
-                  type="button" 
+                <button
+                  className="profile-btn"
+                  type="button"
                   onClick={handleDropdownToggle('profile')}
                 >
-                  <img 
-                    src="https://via.placeholder.com/40" 
-                    alt="profile" 
-                    className="profile-avatar" 
+                  <img
+                    src="https://via.placeholder.com/40"
+                    alt="profile"
+                    className="profile-avatar"
                   />
                 </button>
 
@@ -357,7 +363,10 @@ function College() {
             <Route index element={<Navigate to="/college/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="administration" element={<Administration />} />
-           <Route path="announcement" element={<Announcement />} />
+            <Route path="track" element={<Track />} />
+            <Route path="admission" element={<Admission />} />
+            <Route path="attendance" element={<Attendance />} />
+            <Route path="announcement" element={<Announcement />} />
             <Route path="event" element={<Event />} />
             <Route path="chat" element={<Chat />} />
             <Route path="timetable" element={<TimeTable />} />

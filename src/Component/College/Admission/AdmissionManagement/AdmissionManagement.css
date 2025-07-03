@@ -1,0 +1,571 @@
+ .admission-management {
+     max-width: 1400px;
+     margin: 0 auto;
+     padding: 20px;
+     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+     min-height: 100vh;
+     color: #333;
+ }
+ 
+ .admission-management__header {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     margin-bottom: 30px;
+     background: rgba(255, 255, 255, 0.95);
+     padding: 20px 30px;
+     border-radius: 16px;
+     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+     backdrop-filter: blur(10px);
+ }
+ 
+ .admission-management__title {
+     display: flex;
+     align-items: center;
+     gap: 12px;
+     font-size: 28px;
+     font-weight: 700;
+     color: #2d3748;
+     margin: 0;
+ }
+ 
+ .admission-management__title-icon {
+     color: #667eea;
+ }
+ 
+ .admission-management__add-btn {
+     display: flex;
+     align-items: center;
+     gap: 8px;
+     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+     color: white;
+     border: none;
+     padding: 12px 24px;
+     border-radius: 12px;
+     font-size: 16px;
+     font-weight: 600;
+     cursor: pointer;
+     transition: all 0.3s ease;
+     box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+ }
+ 
+ .admission-management__add-btn:hover {
+     transform: translateY(-2px);
+     box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+ }
+ 
+ .admission-management__tabs {
+     display: flex;
+     background: rgba(255, 255, 255, 0.95);
+     border-radius: 16px;
+     padding: 8px;
+     margin-bottom: 24px;
+     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+     backdrop-filter: blur(10px);
+ }
+ 
+ .admission-management__tab {
+     flex: 1;
+     padding: 16px 24px;
+     border: none;
+     background: none;
+     color: #64748b;
+     font-size: 16px;
+     font-weight: 600;
+     border-radius: 12px;
+     cursor: pointer;
+     transition: all 0.3s ease;
+ }
+ 
+ .admission-management__tab--active {
+     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+     color: white;
+     box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+ }
+ 
+ .admission-management__controls {
+     display: flex;
+     gap: 16px;
+     margin-bottom: 24px;
+     align-items: center;
+ }
+ 
+ .admission-management__search {
+     position: relative;
+     flex: 1;
+ }
+ 
+ .admission-management__search-icon {
+     position: absolute;
+     left: 16px;
+     top: 50%;
+     transform: translateY(-50%);
+     color: #64748b;
+ }
+ 
+ .admission-management__search-input {
+     width: 100%;
+     padding: 16px 16px 16px 48px;
+     border: none;
+     border-radius: 12px;
+     font-size: 16px;
+     background: rgba(255, 255, 255, 0.95);
+     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+     backdrop-filter: blur(10px);
+     transition: all 0.3s ease;
+ }
+ 
+ .admission-management__search-input:focus {
+     outline: none;
+     box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+ }
+ 
+ .admission-management__filter-btn {
+     display: flex;
+     align-items: center;
+     gap: 8px;
+     background: rgba(255, 255, 255, 0.95);
+     color: #64748b;
+     border: none;
+     padding: 16px 24px;
+     border-radius: 12px;
+     font-size: 16px;
+     font-weight: 600;
+     cursor: pointer;
+     transition: all 0.3s ease;
+     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+     backdrop-filter: blur(10px);
+ }
+ 
+ .admission-management__filter-btn:hover {
+     color: #667eea;
+     transform: translateY(-1px);
+ }
+ 
+ .admission-management__filters {
+     display: grid;
+     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+     gap: 16px;
+     padding: 24px;
+     background: rgba(255, 255, 255, 0.95);
+     border-radius: 16px;
+     margin-bottom: 24px;
+     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+     backdrop-filter: blur(10px);
+ }
+ 
+ .admission-management__filter-group {
+     display: flex;
+     flex-direction: column;
+     gap: 8px;
+ }
+ 
+ .admission-management__filter-label {
+     display: flex;
+     align-items: center;
+     gap: 8px;
+     font-size: 14px;
+     font-weight: 600;
+     color: #374151;
+ }
+ 
+ .admission-management__filter-input,
+ .admission-management__filter-select {
+     padding: 12px 16px;
+     border: 2px solid #e5e7eb;
+     border-radius: 8px;
+     font-size: 14px;
+     transition: all 0.3s ease;
+ }
+ 
+ .admission-management__filter-input:focus,
+ .admission-management__filter-select:focus {
+     outline: none;
+     border-color: #667eea;
+     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+ }
+ 
+ .admission-management__clear-btn {
+     padding: 12px 24px;
+     background: #ef4444;
+     color: white;
+     border: none;
+     border-radius: 8px;
+     font-size: 14px;
+     font-weight: 600;
+     cursor: pointer;
+     transition: all 0.3s ease;
+     align-self: end;
+ }
+ 
+ .admission-management__clear-btn:hover {
+     background: #dc2626;
+     transform: translateY(-1px);
+ }
+ 
+ .admission-management__table-container {
+     background: rgba(255, 255, 255, 0.95);
+     border-radius: 16px;
+     padding: 24px;
+     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+     backdrop-filter: blur(10px);
+     overflow-x: auto;
+ }
+ 
+ .admission-management__table {
+     width: 100%;
+     border-collapse: collapse;
+     font-size: 14px;
+ }
+ 
+ .admission-management__table th,
+ .admission-management__table td {
+     padding: 16px;
+     text-align: left;
+     border-bottom: 1px solid #e5e7eb;
+ }
+ 
+ .admission-management__table th {
+     font-weight: 600;
+     color: #374151;
+     background-color: #f9fafb;
+     position: sticky;
+     top: 0;
+ }
+ 
+ .admission-management__table tr:hover {
+     background-color: #f8fafc;
+ }
+ 
+ .admission-management__table-actions {
+     display: flex;
+     gap: 8px;
+ }
+ 
+ .admission-management__action-btn {
+     padding: 8px;
+     border: none;
+     border-radius: 8px;
+     cursor: pointer;
+     transition: all 0.3s ease;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+ }
+ 
+ .admission-management__action-btn--edit {
+     background: #3b82f6;
+     color: white;
+ }
+ 
+ .admission-management__action-btn--edit:hover {
+     background: #2563eb;
+     transform: scale(1.1);
+ }
+ 
+ .admission-management__action-btn--delete {
+     background: #ef4444;
+     color: white;
+ }
+ 
+ .admission-management__action-btn--delete:hover {
+     background: #dc2626;
+     transform: scale(1.1);
+ }
+ 
+ .admission-management__status {
+     padding: 6px 12px;
+     border-radius: 20px;
+     font-size: 12px;
+     font-weight: 600;
+     text-transform: uppercase;
+     letter-spacing: 0.5px;
+ }
+ 
+ .admission-management__status--pending {
+     background: #fef3c7;
+     color: #d97706;
+ }
+ 
+ .admission-management__status--contacted {
+     background: #dbeafe;
+     color: #2563eb;
+ }
+ 
+ .admission-management__status--enrolled {
+     background: #d1fae5;
+     color: #059669;
+ }
+ 
+ .admission-management__empty {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     padding: 60px 20px;
+     text-align: center;
+     color: #64748b;
+ }
+ 
+ .admission-management__empty h3 {
+     margin: 16px 0 8px;
+     font-size: 24px;
+     font-weight: 600;
+ }
+ 
+ .admission-management__modal-overlay {
+     position: fixed;
+     top: 0;
+     left: 0;
+     right: 0;
+     bottom: 0;
+     background: rgba(0, 0, 0, 0.6);
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     z-index: 1000;
+     backdrop-filter: blur(8px);
+ }
+ 
+ .admission-management__modal {
+     background: white;
+     border-radius: 20px;
+     width: 90%;
+     max-width: 800px;
+     max-height: 90vh;
+     overflow-y: auto;
+     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+ }
+ 
+ .admission-management__modal-header {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     padding: 24px 32px;
+     border-bottom: 2px solid #f1f5f9;
+     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+     color: white;
+     border-radius: 20px 20px 0 0;
+ }
+ 
+ .admission-management__modal-header h2 {
+     margin: 0;
+     font-size: 24px;
+     font-weight: 700;
+ }
+ 
+ .admission-management__modal-close {
+     background: rgba(255, 255, 255, 0.2);
+     border: none;
+     color: white;
+     padding: 8px;
+     border-radius: 8px;
+     cursor: pointer;
+     transition: all 0.3s ease;
+ }
+ 
+ .admission-management__modal-close:hover {
+     background: rgba(255, 255, 255, 0.3);
+     transform: scale(1.1);
+ }
+ 
+ .admission-management__form {
+     padding: 32px;
+ }
+ 
+ .admission-management__form-grid {
+     display: grid;
+     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+     gap: 24px;
+     margin-bottom: 32px;
+ }
+ 
+ .admission-management__form-group {
+     display: flex;
+     flex-direction: column;
+     gap: 8px;
+ }
+ 
+ .admission-management__form-group--full {
+     grid-column: 1 / -1;
+ }
+ 
+ .admission-management__form-label {
+     font-size: 14px;
+     font-weight: 600;
+     color: #374151;
+ }
+ 
+ .admission-management__form-input,
+ .admission-management__form-select,
+ .admission-management__form-textarea {
+     padding: 14px 16px;
+     border: 2px solid #e5e7eb;
+     border-radius: 12px;
+     font-size: 16px;
+     transition: all 0.3s ease;
+     font-family: inherit;
+ }
+ 
+ .admission-management__form-input:focus,
+ .admission-management__form-select:focus,
+ .admission-management__form-textarea:focus {
+     outline: none;
+     border-color: #667eea;
+     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+ }
+ 
+ .admission-management__form-textarea {
+     resize: vertical;
+     min-height: 100px;
+ }
+ 
+ .admission-management__radio-group {
+     display: flex;
+     gap: 20px;
+     flex-wrap: wrap;
+ }
+ 
+ .admission-management__radio-label {
+     display: flex;
+     align-items: center;
+     gap: 8px;
+     cursor: pointer;
+     font-size: 16px;
+     color: #374151;
+     font-weight: 500;
+ }
+ 
+ .admission-management__radio-input {
+     width: 20px;
+     height: 20px;
+     accent-color: #667eea;
+ }
+ 
+ .admission-management__form-actions {
+     display: flex;
+     gap: 16px;
+     justify-content: flex-end;
+     padding-top: 24px;
+     border-top: 2px solid #f1f5f9;
+ }
+ 
+ .admission-management__btn {
+     padding: 14px 28px;
+     border: none;
+     border-radius: 12px;
+     font-size: 16px;
+     font-weight: 600;
+     cursor: pointer;
+     transition: all 0.3s ease;
+     min-width: 120px;
+ }
+ 
+ .admission-management__btn--primary {
+     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+     color: white;
+     box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+ }
+ 
+ .admission-management__btn--primary:hover {
+     transform: translateY(-2px);
+     box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+ }
+ 
+ .admission-management__btn--secondary {
+     background: #f8fafc;
+     color: #64748b;
+     border: 2px solid #e2e8f0;
+ }
+ 
+ .admission-management__btn--secondary:hover {
+     background: #e2e8f0;
+     color: #475569;
+ }
+ /* Responsive Design */
+ 
+ @media (max-width: 768px) {
+     .admission-management {
+         padding: 16px;
+     }
+     .admission-management__header {
+         flex-direction: column;
+         gap: 16px;
+         text-align: center;
+         padding: 20px;
+     }
+     .admission-management__title {
+         font-size: 24px;
+     }
+     .admission-management__controls {
+         flex-direction: column;
+     }
+     .admission-management__filters {
+         grid-template-columns: 1fr;
+     }
+     .admission-management__form-grid {
+         grid-template-columns: 1fr;
+     }
+     .admission-management__radio-group {
+         flex-direction: column;
+         gap: 12px;
+     }
+     .admission-management__form-actions {
+         flex-direction: column;
+     }
+     .admission-management__modal {
+         width: 95%;
+         margin: 20px;
+     }
+     .admission-management__modal-header {
+         padding: 20px;
+     }
+     .admission-management__form {
+         padding: 20px;
+     }
+ }
+ 
+ @media (max-width: 480px) {
+     .admission-management__form-grid {
+         gap: 16px;
+     }
+     .admission-management__modal-header h2 {
+         font-size: 20px;
+     }
+ }
+ /* Animations */
+ 
+ @keyframes fadeIn {
+     from {
+         opacity: 0;
+         transform: translateY(20px);
+     }
+     to {
+         opacity: 1;
+         transform: translateY(0);
+     }
+ }
+ 
+ .admission-management__modal {
+     animation: fadeIn 0.3s ease-out;
+ }
+ /* Custom Scrollbar */
+ 
+ .admission-management__modal::-webkit-scrollbar {
+     width: 8px;
+ }
+ 
+ .admission-management__modal::-webkit-scrollbar-track {
+     background: #f1f5f9;
+     border-radius: 4px;
+ }
+ 
+ .admission-management__modal::-webkit-scrollbar-thumb {
+     background: #cbd5e1;
+     border-radius: 4px;
+ }
+ 
+ .admission-management__modal::-webkit-scrollbar-thumb:hover {
+     background: #94a3b8;
+ }

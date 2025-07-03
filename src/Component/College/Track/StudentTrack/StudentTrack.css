@@ -1,0 +1,1033 @@
+import React,
+{
+    useState,
+    useMemo,
+    useEffect
+}
+
+from 'react';
+import {
+    Users,
+    UserCheck,
+    AlertTriangle,
+    Star,
+    Trophy,
+    Search,
+    Filter,
+    Download,
+    Edit,
+    Trash2,
+    ChevronDown,
+    TrendingUp,
+    Calendar,
+    Award,
+    BookOpen
+}
+
+from 'lucide-react';
+const StudentTrackDashboard=()=> {
+    // Sample data - in real app, this would come from API
+    const [students]=useState([ {
+        id: 1, name: "Anjali Sharma", rollNo: "CSE21A001", department: "CSE", branch: "CSE-A", semester: "6th", attendance: 98.5, currentStatus: "Present", rating: 4.9, flags: [], reason: "Perfect Attendance"
+    }
+    , {
+        id: 2, name: "Rahul Kumar", rollNo: "ME21B002", department: "ME", branch: "ME-B", semester: "4th", attendance: 87.3, currentStatus: "Present", rating: 4.2, flags: [], reason: "Good Performance"
+    }
+    , {
+        id: 3, name: "Priya Singh", rollNo: "CSE21A003", department: "CSE", branch: "CSE-A", semester: "6th", attendance: 72.1, currentStatus: "Absent", rating: 3.1, flags: ["Low Attendance"], reason: "Below 75% Attendance"
+    }
+    , {
+        id: 4, name: "Arjun Patel", rollNo: "CSE21B004", department: "CSE", branch: "CSE-B", semester: "6th", attendance: 91.8, currentStatus: "Present", rating: 4.6, flags: [], reason: "Excellent Performance"
+    }
+    , {
+        id: 5, name: "Sneha Reddy", rollNo: "ME21A005", department: "ME", branch: "ME-A", semester: "4th", attendance: 68.9, currentStatus: "Leave", rating: 2.8, flags: ["Low Attendance", "Discipline"], reason: "Low Attendance & Discipline Issues"
+    }
+    , {
+        id: 6, name: "Vikram Joshi", rollNo: "CSE21A006", department: "CSE", branch: "CSE-A", semester: "6th", attendance: 95.2, currentStatus: "Present", rating: 4.8, flags: [], reason: "Outstanding Performance"
+    }
+    ]);
+    const [filters,
+    setFilters]=useState( {
+        department: '', branch: '', semester: '', name: '', rating: 0
+    }
+    );
+    const [isAnimated,
+    setIsAnimated]=useState(false);
+    useEffect(()=> {
+        setIsAnimated(true);
+    }
+    , []);
+    // Calculate statistics
+    const stats=useMemo(()=> {
+        const filteredStudents=students.filter(student=> {
+            return ( (filters.department==='' || student.department===filters.department) && (filters.branch==='' || student.branch===filters.branch) && (filters.semester==='' || student.semester===filters.semester) && (filters.name==='' || student.name.toLowerCase().includes(filters.name.toLowerCase())) && (filters.rating===0 || student.rating >=filters.rating));
+        }
+        );
+        const totalStudents=filteredStudents.length;
+        const presentToday=filteredStudents.filter(s=> s.currentStatus==='Present').length;
+        const below75Attendance=filteredStudents.filter(s=> s.attendance < 75).length;
+        const averageRating=filteredStudents.reduce((sum, s)=> sum + s.rating, 0) / totalStudents || 0;
+        const topPerformer=filteredStudents.reduce((top, current)=> current.rating > top.rating ? current: top, filteredStudents[0] || {}
+        );
+        return {
+            totalStudents, presentToday, below75Attendance, averageRating, topPerformer, filteredStudents
+        }
+        ;
+    }
+    , [students, filters]);
+    // Filter handlers
+    const handleFilterChange=(key, value)=> {
+        setFilters(prev=> ( {
+            ...prev, [key]: value
+        }
+        ));
+    }
+    ;
+    // Export functionality
+    const exportToExcel=()=> {
+        const csvContent="data:text/csv;charset=utf-8,"+"Name,Roll No,Department,Branch,Semester,Attendance %,Status,Rating,Flags,Reason\n"+stats.filteredStudents.map(student=> `$ {
+            student.name
+        }
+        , $ {
+            student.rollNo
+        }
+        , $ {
+            student.department
+        }
+        , $ {
+            student.branch
+        }
+        , $ {
+            student.semester
+        }
+        , $ {
+            student.attendance
+        }
+        , $ {
+            student.currentStatus
+        }
+        , $ {
+            student.rating
+        }
+        , "${student.flags.join(', ')}", $ {
+            student.reason
+        }
+        `).join("\n");
+        const encodedUri=encodeURI(csvContent);
+        const link=document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "student-performance.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+    ;
+    const StatCard=( {
+        icon: Icon, title, value, subtitle, color, delay
+    }
+    )=>( <div className= {
+        `student-track-dashboard__stat-card $ {
+            isAnimated ? 'student-track-dashboard__stat-card--animated': ''
+        }
+        `
+    }
+    style= {
+        {
+            animationDelay: `$ {
+                delay
+            }
+            ms`
+        }
+    }
+    > <div className="student-track-dashboard__stat-card-content"> <div className= {
+        `student-track-dashboard__stat-icon student-track-dashboard__stat-icon--$ {
+            color
+        }
+        `
+    }
+    > <Icon size= {
+        24
+    }
+    /> </div> <div className="student-track-dashboard__stat-info"> <h3 className="student-track-dashboard__stat-title"> {
+        title
+    }
+    </h3> <p className="student-track-dashboard__stat-value"> {
+        value
+    }
+    </p> {
+        subtitle && <p className="student-track-dashboard__stat-subtitle"> {
+            subtitle
+        }
+        </p>
+    }
+    </div> </div> </div>);
+    const TopPerformerCard=( {
+        student
+    }
+    )=>( <div className= {
+        `student-track-dashboard__top-performer $ {
+            isAnimated ? 'student-track-dashboard__top-performer--animated': ''
+        }
+        `
+    }
+    > <div className="student-track-dashboard__top-performer-header"> <Trophy className="student-track-dashboard__trophy-icon" size= {
+        24
+    }
+    /> <h3>Top Performer</h3> </div> <div className="student-track-dashboard__top-performer-content"> <div className="student-track-dashboard__performer-avatar"> {
+        student.name?.charAt(0)
+    }
+    </div> <div className="student-track-dashboard__performer-info"> <h4> {
+        student.name
+    }
+    </h4> <p> {
+        student.department
+    }
+    • {
+        student.semester
+    }
+    </p> <div className="student-track-dashboard__performer-rating"> <Star size= {
+        16
+    }
+    fill="currentColor" /> <span> {
+        student.rating
+    }
+    </span> </div> <p className="student-track-dashboard__performer-reason"> {
+        student.reason
+    }
+    </p> </div> </div> </div>);
+    const FilterSelect=( {
+        label, value, onChange, options, placeholder
+    }
+    )=>( <div className="student-track-dashboard__filter-group"> <label> {
+        label
+    }
+    </label> <div className="student-track-dashboard__select-wrapper"> <select value= {
+        value
+    }
+    onChange= {
+        (e)=> onChange(e.target.value)
+    }
+    className="student-track-dashboard__select" > <option value=""> {
+        placeholder
+    }
+    </option> {
+        options.map(option=> ( <option key= {
+            option
+        }
+        value= {
+            option
+        }
+        > {
+            option
+        }
+        </option>))
+    }
+    </select> <ChevronDown size= {
+        16
+    }
+    className="student-track-dashboard__select-icon" /> </div> </div>);
+    const StatusBadge=( {
+        status
+    }
+    )=>( <span className= {
+        `student-track-dashboard__status-badge student-track-dashboard__status-badge--$ {
+            status.toLowerCase()
+        }
+        `
+    }
+    > {
+        status
+    }
+    </span>);
+    const RatingStars=( {
+        rating
+    }
+    )=>( <div className="student-track-dashboard__rating-stars"> {
+        [1, 2, 3, 4, 5].map(star=> ( <Star key= {
+            star
+        }
+        size= {
+            16
+        }
+        fill= {
+            star <=rating ? "currentColor": "none"
+        }
+        className= {
+            star <=rating ? "student-track-dashboard__star--filled": "student-track-dashboard__star"
+        }
+        />))
+    }
+    <span className="student-track-dashboard__rating-value"> {
+        rating
+    }
+    </span> </div>);
+    return ( <div className="student-track-dashboard"> <div className="student-track-dashboard__header"> <h1 className="student-track-dashboard__title">Student Track Performance</h1> <p className="student-track-dashboard__subtitle">Overall View Dashboard</p> </div> {
+        /* Summary Cards */
+    }
+    <div className="student-track-dashboard__stats-grid"> <StatCard icon= {
+        Users
+    }
+    title="Total Students" value= {
+        stats.totalStudents
+    }
+    color="blue" delay= {
+        100
+    }
+    /> <StatCard icon= {
+        UserCheck
+    }
+    title="Present Today" value= {
+        stats.presentToday
+    }
+    subtitle= {
+        `$ {
+            ((stats.presentToday / stats.totalStudents) * 100 || 0).toFixed(1)
+        }
+        %`
+    }
+    color="green" delay= {
+        200
+    }
+    /> <StatCard icon= {
+        AlertTriangle
+    }
+    title="Below 75% Attendance" value= {
+        stats.below75Attendance
+    }
+    subtitle="Students at risk" color="red" delay= {
+        300
+    }
+    /> <StatCard icon= {
+        Star
+    }
+    title="Average Rating" value= {
+        stats.averageRating.toFixed(1)
+    }
+    subtitle="⭐ out of 5" color="yellow" delay= {
+        400
+    }
+    /> </div> {
+        /* Top Performer Card */
+    }
+    {
+        stats.topPerformer && ( <TopPerformerCard student= {
+            stats.topPerformer
+        }
+        />)
+    }
+    {
+        /* Filter Bar */
+    }
+    <div className="student-track-dashboard__filter-bar"> <div className="student-track-dashboard__filter-title"> <Filter size= {
+        20
+    }
+    /> <span>Advanced Filters</span> </div> <div className="student-track-dashboard__filters"> <FilterSelect label="Department" value= {
+        filters.department
+    }
+    onChange= {
+        (value)=> handleFilterChange('department', value)
+    }
+    options= {
+        [...new Set(students.map(s=> s.department))]
+    }
+    placeholder="All Departments" /> <FilterSelect label="Branch" value= {
+        filters.branch
+    }
+    onChange= {
+        (value)=> handleFilterChange('branch', value)
+    }
+    options= {
+        [...new Set(students.map(s=> s.branch))]
+    }
+    placeholder="All Branches" /> <FilterSelect label="Semester" value= {
+        filters.semester
+    }
+    onChange= {
+        (value)=> handleFilterChange('semester', value)
+    }
+    options= {
+        [...new Set(students.map(s=> s.semester))]
+    }
+    placeholder="All Semesters" /> <div className="student-track-dashboard__filter-group"> <label>Name Search</label> <div className="student-track-dashboard__search-wrapper"> <Search size= {
+        16
+    }
+    className="student-track-dashboard__search-icon" /> <input type="text" placeholder="Search student name..." value= {
+        filters.name
+    }
+    onChange= {
+        (e)=> handleFilterChange('name', e.target.value)
+    }
+    className="student-track-dashboard__search-input" /> </div> </div> <div className="student-track-dashboard__filter-group"> <label>Rating Filter</label> <div className="student-track-dashboard__rating-filter"> <input type="range" min="0" max="5" step="0.1" value= {
+        filters.rating
+    }
+    onChange= {
+        (e)=> handleFilterChange('rating', parseFloat(e.target.value))
+    }
+    className="student-track-dashboard__rating-slider" /> <span className="student-track-dashboard__rating-display"> {
+        filters.rating > 0 ? `≥ $ {
+            filters.rating
+        }
+        ⭐`: 'All Ratings'
+    }
+    </span> </div> </div> </div> <button onClick= {
+        exportToExcel
+    }
+    className="student-track-dashboard__export-btn" > <Download size= {
+        16
+    }
+    /> Export Data </button> </div> {
+        /* Main Table */
+    }
+    <div className="student-track-dashboard__table-container"> <div className="student-track-dashboard__table-header"> <h2>Student Performance Data</h2> <span className="student-track-dashboard__table-count"> {
+        stats.filteredStudents.length
+    }
+    students </span> </div> <div className="student-track-dashboard__table-wrapper"> <table className="student-track-dashboard__table"> <thead> <tr> <th>Name</th> <th>Roll No</th> <th>Dept/Branch/Sem</th> <th>Attendance %</th> <th>Current Status</th> <th>Rating</th> <th>Rank</th> <th>Flags</th> <th>Reason</th> <th>Actions</th> </tr> </thead> <tbody> {
+        stats.filteredStudents .sort((a, b)=> b.rating - a.rating) .map((student, index)=> ( <tr key= {
+            student.id
+        }
+        className="student-track-dashboard__table-row"> <td className="student-track-dashboard__student-name"> <div className="student-track-dashboard__student-avatar"> {
+            student.name.charAt(0)
+        }
+        </div> <span> {
+            student.name
+        }
+        </span> </td> <td className="student-track-dashboard__roll-no"> {
+            student.rollNo
+        }
+        </td> <td className="student-track-dashboard__academic-info"> <div> <span className="student-track-dashboard__dept"> {
+            student.department
+        }
+        </span> <span className="student-track-dashboard__branch-sem"> {
+            student.branch
+        }
+        • {
+            student.semester
+        }
+        </span> </div> </td> <td className="student-track-dashboard__attendance"> <div className="student-track-dashboard__attendance-bar"> <div className="student-track-dashboard__attendance-fill" style= {
+            {
+                width: `$ {
+                    student.attendance
+                }
+                %`
+            }
+        }
+        ></div> </div> <span className= {
+            `student-track-dashboard__attendance-value $ {
+                student.attendance < 75 ? 'student-track-dashboard__attendance-value--low': ''
+            }
+            `
+        }
+        > {
+            student.attendance
+        }
+        % </span> </td> <td> <StatusBadge status= {
+            student.currentStatus
+        }
+        /> </td> <td> <RatingStars rating= {
+            student.rating
+        }
+        /> </td> <td className="student-track-dashboard__rank"> <span className="student-track-dashboard__rank-badge"> #{index + 1} </span> </td> <td> <div className="student-track-dashboard__flags"> {
+            student.flags.map(flag=> ( <span key= {
+                flag
+            }
+            className="student-track-dashboard__flag"> {
+                flag
+            }
+            </span>))
+        }
+        </div> </td> <td className="student-track-dashboard__reason"> {
+            student.reason
+        }
+        </td> <td> <div className="student-track-dashboard__actions"> <button className="student-track-dashboard__action-btn student-track-dashboard__action-btn--edit"> <Edit size= {
+            16
+        }
+        /> </button> <button className="student-track-dashboard__action-btn student-track-dashboard__action-btn--delete"> <Trash2 size= {
+            16
+        }
+        /> </button> </div> </td> </tr>))
+    }
+    </tbody> </table> </div> </div> <style jsx> {
+        ` .student-track-dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .student-track-dashboard__header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease;
+        }
+        .student-track-dashboard__title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .student-track-dashboard__subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin: 0;
+        }
+        .student-track-dashboard__stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .student-track-dashboard__stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .student-track-dashboard__stat-card--animated {
+            animation: slideInUp 0.6s ease forwards;
+        }
+        .student-track-dashboard__stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+        .student-track-dashboard__stat-card-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .student-track-dashboard__stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        .student-track-dashboard__stat-icon--blue {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        .student-track-dashboard__stat-icon--green {
+            background: linear-gradient(135deg, #56ab2f, #a8e6cf);
+        }
+        .student-track-dashboard__stat-icon--red {
+            background: linear-gradient(135deg, #ff6b6b, #ffa8a8);
+        }
+        .student-track-dashboard__stat-icon--yellow {
+            background: linear-gradient(135deg, #ffd89b, #19547b);
+        }
+        .student-track-dashboard__stat-info {
+            flex: 1;
+        }
+        .student-track-dashboard__stat-title {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 0 0 0.5rem 0;
+            font-weight: 500;
+        }
+        .student-track-dashboard__stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+            margin: 0;
+        }
+        .student-track-dashboard__stat-subtitle {
+            font-size: 0.8rem;
+            color: #888;
+            margin: 0.25rem 0 0 0;
+        }
+        .student-track-dashboard__top-performer {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .student-track-dashboard__top-performer--animated {
+            animation: slideInUp 0.8s ease forwards;
+            animation-delay: 0.5s;
+        }
+        .student-track-dashboard__top-performer-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .student-track-dashboard__trophy-icon {
+            color: #ffd700;
+        }
+        .student-track-dashboard__top-performer-header h3 {
+            margin: 0;
+            color: #333;
+            font-size: 1.2rem;
+        }
+        .student-track-dashboard__top-performer-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .student-track-dashboard__performer-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+        .student-track-dashboard__performer-info h4 {
+            margin: 0 0 0.25rem 0;
+            color: #333;
+            font-size: 1.1rem;
+        }
+        .student-track-dashboard__performer-info p {
+            margin: 0 0 0.5rem 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .student-track-dashboard__performer-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: #ffd700;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .student-track-dashboard__performer-reason {
+            color: #888 !important;
+            font-size: 0.8rem !important;
+        }
+        .student-track-dashboard__filter-bar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .student-track-dashboard__filter-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+            font-weight: 600;
+        }
+        .student-track-dashboard__filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .student-track-dashboard__filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .student-track-dashboard__filter-group label {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+        }
+        .student-track-dashboard__select-wrapper {
+            position: relative;
+        }
+        .student-track-dashboard__select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            background: white;
+            font-size: 0.9rem;
+            appearance: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .student-track-dashboard__select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .student-track-dashboard__select-icon {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            pointer-events: none;
+        }
+        .student-track-dashboard__search-wrapper {
+            position: relative;
+        }
+        .student-track-dashboard__search-input {
+            width: 100%;
+            padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        .student-track-dashboard__search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .student-track-dashboard__search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+        .student-track-dashboard__rating-filter {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .student-track-dashboard__rating-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: #e1e5e9;
+            outline: none;
+        }
+        .student-track-dashboard__rating-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .student-track-dashboard__rating-display {
+            font-size: 0.8rem;
+            color: #666;
+            white-space: nowrap;
+        }
+        .student-track-dashboard__export-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        .student-track-dashboard__export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        .student-track-dashboard__table-row:hover {
+            background: #f8f9ff;
+            transform: scale(1.01);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .student-track-dashboard__table td {
+            padding: 1rem;
+            border: none;
+            vertical-align: middle;
+        }
+        .student-track-dashboard__student-name {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            color: #333;
+        }
+        .student-track-dashboard__student-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        .student-track-dashboard__roll-no {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #666;
+            background: #f8f9fa;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            display: inline-block;
+        }
+        .student-track-dashboard__academic-info {
+            font-size: 0.9rem;
+        }
+        .student-track-dashboard__dept {
+            font-weight: 600;
+            color: #333;
+        }
+        .student-track-dashboard__branch-sem {
+            display: block;
+            color: #666;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+        .student-track-dashboard__attendance {
+            min-width: 120px;
+        }
+        .student-track-dashboard__attendance-bar {
+            width: 100%;
+            height: 8px;
+            background: #e1e5e9;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        .student-track-dashboard__attendance-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #56ab2f, #a8e6cf);
+            transition: width 0.3s ease;
+        }
+        .student-track-dashboard__attendance-value {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #333;
+        }
+        .student-track-dashboard__attendance-value--low {
+            color: #dc3545;
+        }
+        .student-track-dashboard__status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .student-track-dashboard__status-badge--present {
+            background: #d4edda;
+            color: #155724;
+        }
+        .student-track-dashboard__status-badge--absent {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .student-track-dashboard__status-badge--leave {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .student-track-dashboard__rating-stars {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .student-track-dashboard__star {
+            color: #e1e5e9;
+            transition: color 0.3s ease;
+        }
+        .student-track-dashboard__star--filled {
+            color: #ffd700;
+        }
+        .student-track-dashboard__rating-value {
+            margin-left: 0.5rem;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9rem;
+        }
+        .student-track-dashboard__rank-badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        .student-track-dashboard__flags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+        }
+        .student-track-dashboard__flag {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        .student-track-dashboard__reason {
+            max-width: 200px;
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.4;
+        }
+        .student-track-dashboard__actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .student-track-dashboard__action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .student-track-dashboard__action-btn--edit {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        .student-track-dashboard__action-btn--edit:hover {
+            background: #1976d2;
+            color: white;
+            transform: scale(1.1);
+        }
+        .student-track-dashboard__action-btn--delete {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+        .student-track-dashboard__action-btn--delete:hover {
+            background: #d32f2f;
+            color: white;
+            transform: scale(1.1);
+        }
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .student-track-dashboard {
+                padding: 1rem;
+            }
+            .student-track-dashboard__title {
+                font-size: 2rem;
+            }
+            .student-track-dashboard__stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .student-track-dashboard__filters {
+                grid-template-columns: 1fr;
+            }
+            .student-track-dashboard__stat-card {
+                padding: 1.5rem;
+            }
+            .student-track-dashboard__top-performer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            .student-track-dashboard__table-wrapper {
+                font-size: 0.8rem;
+            }
+            .student-track-dashboard__table th, .student-track-dashboard__table td {
+                padding: 0.5rem;
+            }
+            .student-track-dashboard__student-name {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            .student-track-dashboard__student-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 0.8rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .student-track-dashboard__title {
+                font-size: 1.5rem;
+            }
+            .student-track-dashboard__table-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            .student-track-dashboard__actions {
+                flex-direction: column;
+            }
+            .student-track-dashboard__action-btn {
+                width: 32px;
+                height: 32px;
+            }
+        }
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            .student-track-dashboard {
+                background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            }
+            .student-track-dashboard__stat-card, .student-track-dashboard__top-performer, .student-track-dashboard__filter-bar, .student-track-dashboard__table-container {
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .student-track-dashboard__table {
+                background: rgba(255, 255, 255, 0.05);
+            }
+            .student-track-dashboard__stat-title, .student-track-dashboard__stat-value, .student-track-dashboard__top-performer-header h3, .student-track-dashboard__performer-info h4, .student-track-dashboard__table-header h2, .student-track-dashboard__filter-title, .student-track-dashboard__student-name, .student-track-dashboard__dept, .student-track-dashboard__attendance-value, .student-track-dashboard__rating-value {
+                color: white;
+            }
+        }
+        /* Accessibility improvements */
+        .student-track-dashboard__action-btn:focus, .student-track-dashboard__select:focus, .student-track-dashboard__search-input:focus, .student-track-dashboard__export-btn:focus {
+            outline: 2px solid #667eea;
+            outline-offset: 2px;
+        }
+        /* Print styles */
+        @media print {
+            .student-track-dashboard {
+                background: white;
+                padding: 1rem;
+            }
+            .student-track-dashboard__export-btn, .student-track-dashboard__actions {
+                display: none;
+            }
+            .student-track-dashboard__table {
+                font-size: 0.8rem;
+            }
+        }
+        `
+    }
+    </style> </div>);
+}
+
+;
+export default StudentTrackDashboard;
