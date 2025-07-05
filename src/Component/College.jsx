@@ -10,6 +10,7 @@ import Attendance from './College/Attendance/Attendance';
 import Admission from './College/Admission/Admission';
 import Track from './College/Track/Track';
 import Session from './College/Session/Session';
+import ResultManager from './College/Result/Result';
 
 const Administration = () => <div className="page-content">Time Table Component</div>;
 const TimeTable = () => <div className="page-content">Time Table Component</div>;
@@ -127,6 +128,7 @@ function College() {
     { path: '/college/attendance', icon: 'people-outline', title: 'Attendance' },
     { path: '/college/track', icon: 'time-outline', title: 'Track' },
     { path: '/college/admission', icon: 'people-outline', title: 'Admission' },
+    { path: '/college/result', icon: 'walk-outline', title: 'Result' },
     { path: '/college/chat', icon: 'people-outline', title: 'Chat' },
     { path: '/college/announcement', icon: 'megaphone-outline', title: 'Announcement' },
     { path: '/college/event', icon: 'calendar-outline', title: 'Events' },
@@ -367,6 +369,7 @@ function College() {
             <Route path="administration" element={<Administration />} />
              <Route path="session" element={<Session />} />
             <Route path="track" element={<Track />} />
+             <Route path="result" element={<ResultManager />} />
             <Route path="admission" element={<Admission />} />
             <Route path="attendance" element={<Attendance />} />
             <Route path="announcement" element={<Announcement />} />
