@@ -9,6 +9,7 @@ import Transport from './College/Transport Mangament/Transport';
 import Attendance from './College/Attendance/Attendance';
 import Admission from './College/Admission/Admission';
 import Track from './College/Track/Track';
+import Session from './College/Session/Session';
 
 const Administration = () => <div className="page-content">Time Table Component</div>;
 const TimeTable = () => <div className="page-content">Time Table Component</div>;
@@ -122,6 +123,7 @@ function College() {
   const navItems = [
     { path: '/college/dashboard', icon: 'home-outline', title: 'Dashboard' },
     { path: '/college/administration', icon: 'people-outline', title: 'Administration' },
+    { path: '/college/session', icon: 'calendar-outline', title: 'Session' },
     { path: '/college/attendance', icon: 'people-outline', title: 'Attendance' },
     { path: '/college/track', icon: 'time-outline', title: 'Track' },
     { path: '/college/admission', icon: 'people-outline', title: 'Admission' },
@@ -363,6 +365,7 @@ function College() {
             <Route index element={<Navigate to="/college/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="administration" element={<Administration />} />
+             <Route path="session" element={<Session />} />
             <Route path="track" element={<Track />} />
             <Route path="admission" element={<Admission />} />
             <Route path="attendance" element={<Attendance />} />
